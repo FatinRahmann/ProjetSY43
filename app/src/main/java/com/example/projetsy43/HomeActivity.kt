@@ -103,7 +103,7 @@ fun EventCard(title: String,imageResId: Int, onClick: () -> Unit) {
 
 @Composable
 fun HomeScreen() {
-    BottomAppBar()
+
     val context = LocalContext.current
     var searchQuery by remember { mutableStateOf("") }
 
@@ -192,62 +192,6 @@ fun HomeScreen() {
         }
     }
 }
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun BottomAppBar() {
-    Scaffold(
-        modifier = Modifier.fillMaxWidth(),
-        containerColor = Color.White,
-        bottomBar = {
-            BottomAppBar(
-                containerColor = Color.LightGray,
-                actions = {
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.SpaceAround,
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        IconButton(onClick = { /* do something */ }) {
-                            Icon(
-                                Icons.Filled.Home,
-                                contentDescription = "Home Page"
-                            )
-                        }
-
-                        IconButton(onClick = { /* path after click */ }) {
-                            Icon(
-                                Icons.Filled.Favorite,
-                                contentDescription = "Favourite"
-                            )
-                        }
-
-                        IconButton(onClick = { /* path after click */ }) {
-                            Icon(
-                                Icons.Filled.LocationOn,
-                                contentDescription = "Map"
-                            )
-                        }
-
-                        IconButton(onClick = { /* path after click */ }) {
-                            Icon(
-                                painter = painterResource(id = R.drawable.confirmation_number),
-                                contentDescription = "Map"
-                            )
-                        }
-                    }
-                },
-            )
-        },
-        content = { paddingValues ->
-
-            Column(modifier = Modifier.padding(paddingValues)) {
-
-            }
-        }
-    )
-}
-
 
 
 @Preview(showBackground = true)
