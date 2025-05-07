@@ -215,33 +215,37 @@ fun BottomAppBar() {
                             )
                         }
 
-                        IconButton(onClick = { /* do something */ }) {
+                        IconButton(onClick = { /* path after click */ }) {
                             Icon(
                                 Icons.Filled.Favorite,
                                 contentDescription = "Favourite"
                             )
                         }
 
-                        IconButton(onClick = { /* do something */ }) {
+                        IconButton(onClick = { /* path after click */ }) {
                             Icon(
                                 Icons.Filled.LocationOn,
                                 contentDescription = "Map"
                             )
                         }
 
-                        IconButton(onClick = { /* do something */ }) {
+                        IconButton(onClick = { /* path after click */ }) {
                             Icon(
                                 painter = painterResource(id = R.drawable.confirmation_number),
                                 contentDescription = "Map"
                             )
                         }
                     }
-
-
                 },
             )
         },
-    ) {}
+        content = { paddingValues ->
+
+            Column(modifier = Modifier.padding(paddingValues)) {
+
+            }
+        }
+    )
 }
 
 
