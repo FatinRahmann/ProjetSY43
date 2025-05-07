@@ -21,10 +21,18 @@ import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.filled.LocationOn
+import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -37,6 +45,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
@@ -94,6 +103,7 @@ fun EventCard(title: String,imageResId: Int, onClick: () -> Unit) {
 
 @Composable
 fun HomeScreen() {
+    BottomAppBar()
     val context = LocalContext.current
     var searchQuery by remember { mutableStateOf("") }
 
@@ -181,6 +191,70 @@ fun HomeScreen() {
             }
         }
     }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun BottomAppBar() {
+    Scaffold(
+        modifier = Modifier.fillMaxWidth(),
+        containerColor = Color.White,
+        bottomBar = {
+            BottomAppBar(
+                containerColor = Color.LightGray,
+                actions = {
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceAround,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        IconButton(onClick = { /* do something */ }) {
+                            Icon(
+                                Icons.Filled.Home,
+                                contentDescription = "Home Page"
+                            )
+                        }
+
+                        IconButton(onClick = { /* path after click */ }) {
+                            Icon(
+                                Icons.Filled.Favorite,
+                                contentDescription = "Favourite"
+                            )
+                        }
+
+                        IconButton(onClick = { /* path after click */ }) {
+                            Icon(
+                                Icons.Filled.LocationOn,
+                                contentDescription = "Map"
+                            )
+                        }
+
+                        IconButton(onClick = { /* path after click */ }) {
+                            Icon(
+                                painter = painterResource(id = R.drawable.confirmation_number),
+                                contentDescription = "Map"
+                            )
+                        }
+                    }
+                },
+            )
+        },
+        content = { paddingValues ->
+
+            Column(modifier = Modifier.padding(paddingValues)) {
+
+            }
+        }
+    )
+}
+
+
+
+@Preview(showBackground = true)
+@Composable
+fun HomeScreenPreview() {
+    HomeScreen()
+
 }
 
 
