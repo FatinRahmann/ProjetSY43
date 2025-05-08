@@ -1,5 +1,4 @@
 package com.example.projetsy43
-
 import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -20,12 +19,15 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.google.firebase.auth.FirebaseAuth
+import androidx.compose.ui.graphics.Color
 
-
+// Active interface de LoginScreen
 class LoginActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -35,11 +37,17 @@ class LoginActivity : ComponentActivity() {
     }
 }
 
+//Ecran de connexion
 @Composable
 fun LoginScreen() {
+
+    //stockage de l'email et mdp de l'utilisateur
     val context = LocalContext.current
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
+
+    //erreur message si echec connexion
+    var errorMessage by remember { mutableStateOf("") }
 
     Box(
         modifier = Modifier
@@ -56,7 +64,7 @@ fun LoginScreen() {
                 modifier = Modifier.padding(bottom = 24.dp)
             )
 
-            // Email input
+            // champs de l'email, valeur stocke dans la var email
             OutlinedTextField(
                 value = email,
                 onValueChange = { email = it },
@@ -66,7 +74,7 @@ fun LoginScreen() {
                     .padding(bottom = 16.dp)
             )
 
-            // Password input
+            // champs du mdp, masque le mdp
             OutlinedTextField(
                 value = password,
                 onValueChange = { password = it },
@@ -77,11 +85,31 @@ fun LoginScreen() {
                     .padding(bottom = 24.dp)
             )
 
-            // Login button
+            // message erreur en rouge
+            if (errorMessage.isNotEmpty()) {
+                Text(
+                    text = errorMessage,
+                    color = Color.Red,
+                    modifier = Modifier.padding(bottom = 16.dp)
+                )
+            }
+
+            // login button
             Button(
                 onClick = {
-                    val intent = Intent(context, HomeActivity::class.java)
-                    context.startActivity(intent)
+
+                    // utilisation de firebase authentication pour verifier les identifiants
+                    val auth = FirebaseAuth.getInstance()
+                    auth.signInWithEmailAndPassword(email, password)
+                        .addOnCompleteListener { task ->
+                            if (task.isSuccessful) {
+                                // succes connexion redirige vers Homescreen
+                                val intent = Intent(context, HomeActivity::class.java)
+                                context.startActivity(intent)
+                            } else {
+                                errorMessage = task.exception?.message ?: "Erreur inconnue"
+                            }
+                        }
                 },
                 modifier = Modifier.fillMaxWidth()
             ) {
@@ -89,11 +117,4 @@ fun LoginScreen() {
             }
         }
     }
-}
-
-@Preview(showBackground = true)
-@Composable
-fun LoginPreview() {
-    LoginScreen()
-
 }

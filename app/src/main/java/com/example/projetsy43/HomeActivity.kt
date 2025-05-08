@@ -1,10 +1,10 @@
 package com.example.projetsy43
-
 import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -48,8 +48,12 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.google.firebase.database.FirebaseDatabase
+import coil.compose.rememberAsyncImagePainter
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.ui.text.font.FontWeight
 
-
+//Affiche ecran d'acceuil HomeScreen
 class HomeActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -58,135 +62,223 @@ class HomeActivity : ComponentActivity() {
         }
     }
 }
-data class Event(val title: String, val imageResId: Int)
 
+//Un evenement avec ses donnees
+data class Event(val title: String = "", val imageUrl: String = "", val date: String = "", val location: String = "", val description: String = "", val addresse: String = "")
+
+//Permet de recuperer la liste des event depuis la BD
+public fun fetchEvents(onResult: (List<Event>) -> Unit) {
+    val dbRef = FirebaseDatabase.getInstance("https://test-7b21e-default-rtdb.europe-west1.firebasedatabase.app").getReference("events")
+    dbRef.get().addOnSuccessListener { snapshot ->
+        val events = snapshot.children.mapNotNull { it.getValue(Event::class.java) }
+        onResult(events) // transmet la liste
+    }
+}
+
+//Carte individuelle dans le HomeScreen pour chaque event
 @Composable
-fun EventCard(title: String,imageResId: Int, onClick: () -> Unit) {
+fun EventCard(event: Event, onClick: () -> Unit) {
+
+    //definit affichage des cartes
     Card(
         modifier = Modifier
             .width(160.dp)
-            .height(200.dp) // taller to fit image
+            .height(200.dp)
             .clickable { onClick() },
         shape = RoundedCornerShape(12.dp),
         colors = CardDefaults.cardColors(containerColor = Color.White)
     ) {
         Column {
+            //recupere image de la BD
             Image(
-                painter = painterResource(id = imageResId),
-                contentDescription = title,
+                painter = rememberAsyncImagePainter(event.imageUrl),
+                contentDescription = event.title,
                 contentScale = ContentScale.Crop,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(120.dp) // image height
+                    .height(120.dp)
             )
 
             Box(
                 modifier = Modifier
                     .fillMaxSize()
+                    .background(Color.LightGray) // couleur fond
                     .padding(8.dp),
                 contentAlignment = Alignment.Center
             ) {
-                Text(
-                    text = title,
-                    fontSize = 14.sp,
-                    color = Color.Black
-                )
+                Column(
+                    horizontalAlignment = Alignment.Start
+                ) {
+                    //recupere titre et lieu de l'evenement
+                    Text(
+                        text = event.title,
+                        fontSize = 16.sp,
+                        color = Color.Black,
+                        fontWeight = FontWeight.Bold,
+                        maxLines = 1
+                    )
+                    Spacer(modifier = Modifier.height(4.dp))
+                    Text(
+                        text = event.location,
+                        fontSize = 12.sp,
+                        color = Color.DarkGray,
+                        maxLines = 1
+                    )
+                }
             }
         }
     }
 }
 
 
-
-
-
-
 @Composable
 fun HomeScreen() {
 
     val context = LocalContext.current
-    var searchQuery by remember { mutableStateOf("") }
+    var searchQuery by remember { mutableStateOf("") } // contenu barre de recherche
+    var allEvents by remember { mutableStateOf<List<Event>>(emptyList()) } // liste des events charges depuis Firebase
 
-    val allEvents = listOf(
-        Event("Sabrina Carpenter Tour", R.drawable.poster_1),
-        Event("Taylor Swift Lover Tour", R.drawable.poster_2),
-        Event("Coldplay World Tour", R.drawable.poster_3),
-        Event("Beyoncé Renaissance Tour", R.drawable.poster_4)
-    )
+    //chargement des donne recuperer via fetchEvents
+    LaunchedEffect(Unit) {
+        fetchEvents { allEvents = it }
+    }
 
-    // Filter based on search
-    val events = allEvents.filter {
+    //filtrage recherche
+    val filteredEvents = allEvents.filter {
         it.title.contains(searchQuery, ignoreCase = true)
     }
 
-    Column(modifier = Modifier.padding(16.dp)) {
-
-        // Header Row
-        Row(
+    Box(modifier = Modifier.fillMaxSize()) {
+        Column(
             modifier = Modifier
-                .fillMaxWidth()
-                .padding(bottom = 12.dp),
-            horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically
+                .padding(16.dp)
+                .align(Alignment.TopStart)
         ) {
-            Row(verticalAlignment = Alignment.CenterVertically) {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(bottom = 12.dp),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                // icon location et profil avec redirection vers page ProfileActivity
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Icon(
+                        painter = painterResource(id = R.drawable.ic_lugar),
+                        contentDescription = "Location",
+                        modifier = Modifier.size(20.dp)
+                    )
+                    Spacer(modifier = Modifier.width(6.dp))
+                    Text("Locations")
+                }
                 Icon(
-                    painter = painterResource(id = R.drawable.ic_location),
-                    contentDescription = "Location",
-                    modifier = Modifier.size(20.dp)
+                    painter = painterResource(id = R.drawable.ic_profile),
+                    contentDescription = "Profile",
+                    modifier = Modifier
+                        .size(28.dp)
+                        .clickable {
+                            val intent = Intent(context, ProfileActivity::class.java)
+                            context.startActivity(intent)
+                        }
                 )
-                Spacer(modifier = Modifier.width(6.dp))
-                Text("Locations")
             }
 
-            Icon(
-                painter = painterResource(id = R.drawable.ic_profile),
-                contentDescription = "Profile",
+            //barre de recherche + icon
+            OutlinedTextField(
+                value = searchQuery,
+                onValueChange = { searchQuery = it },
+                placeholder = { Text("Events, Artist") },
+                leadingIcon = {
+                    Icon(
+                        painter = painterResource(id = R.drawable.ic_search),
+                        contentDescription = "Search"
+                    )
+                },
                 modifier = Modifier
-                    .size(28.dp)
-                    .clickable {
-                        val intent = Intent(context, ProfileActivity::class.java)
-                        context.startActivity(intent)
-                    }
+                    .fillMaxWidth()
+                    .padding(bottom = 16.dp)
             )
-        }
 
-        // Search Bar
-        OutlinedTextField(
-            value = searchQuery,
-            onValueChange = {
+            // ajout espace entre barre recherche et photo
+            Spacer(modifier = Modifier.height(12.dp))
 
-                searchQuery = it
-            },
-            placeholder = { Text("Events, Artist") },
-            leadingIcon = {
-                Icon(
-                    painter = painterResource(id = R.drawable.ic_search),
-                    contentDescription = "Search"
-                )
-            },
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(bottom = 16.dp)
-        )
-
-        // Grid of filtered cards
-        LazyVerticalGrid(
-            columns = GridCells.Fixed(2),
-            verticalArrangement = Arrangement.spacedBy(16.dp),
-            horizontalArrangement = Arrangement.spacedBy(16.dp),
-            modifier = Modifier.fillMaxSize()
-        ) {
-            items(events) { event ->
-                EventCard(
-                    title = event.title,
-                    imageResId = event.imageResId,
-                    onClick = {
+            // events filtrer en grille
+            LazyVerticalGrid(
+                columns = GridCells.Fixed(2),
+                verticalArrangement = Arrangement.spacedBy(16.dp),
+                horizontalArrangement = Arrangement.spacedBy(16.dp),
+                modifier = Modifier.fillMaxSize()
+            ) {
+                // lors du clique sur une carte on accede a la page EventDetailActivity avec toute les infos
+                items(filteredEvents) { event ->
+                    EventCard(event = event) {
                         val intent = Intent(context, EventDetailActivity::class.java)
                         intent.putExtra("title", event.title)
-                        intent.putExtra("image", event.imageResId)
+                        intent.putExtra("imageUrl", event.imageUrl)
+                        intent.putExtra("date", event.date)
+                        intent.putExtra("location", event.location)
+                        intent.putExtra("description", event.description)
+                        intent.putExtra("lieu précis", event.addresse)
                         context.startActivity(intent)
                     }
+                }
+            }
+        }
+
+        // bar inferieur grise avec icons
+        Box(
+            modifier = Modifier
+                .align(Alignment.BottomCenter)
+                .fillMaxWidth()
+                .height(56.dp)
+                .background(Color.LightGray)
+        ) {
+            Row(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(horizontal = 24.dp),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Icon(
+                    painter = painterResource(id = R.drawable.ic_house),
+                    contentDescription = "Accueil",
+                    modifier = Modifier
+                        .size(24.dp)
+                        //redirige vers la page Homescreen
+                        .clickable {
+                            val intent = Intent(context, HomeActivity::class.java)
+                            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP)
+                            context.startActivity(intent)
+                        }
+                )
+
+                Icon(
+                    painter = painterResource(id = R.drawable.ic_map),
+                    contentDescription = "Favoris",
+                    modifier = Modifier
+                        .size(24.dp)
+                        .clickable {
+                            val intent = Intent(context, MapsActivity::class.java)
+                            context.startActivity(intent)
+                        }
+                )
+                Icon(
+                    painter = painterResource(id = R.drawable.ic_favoris),
+                    contentDescription = "Recherche",
+                    modifier = Modifier
+                        .size(24.dp)
+                        .clickable {
+                        }
+                )
+                Icon(
+                    painter = painterResource(id = R.drawable.ic_ticket),
+                    contentDescription = "Profil",
+                    modifier = Modifier
+                        .size(24.dp)
+                        .clickable {
+
+                        }
                 )
             }
         }
@@ -200,6 +292,11 @@ fun HomeScreenPreview() {
     HomeScreen()
 
 }
+
+
+
+
+
 
 
 

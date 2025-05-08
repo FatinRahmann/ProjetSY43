@@ -53,15 +53,14 @@ fun WelcomeScreen(modifier: Modifier = Modifier) {
         modifier = modifier
             .fillMaxSize()
     ) {
-        // Background image
+
         Image(
-            painter = painterResource(id = R.drawable.img), // replace with your image name
+            painter = painterResource(id = R.drawable.img),
             contentDescription = null,
             modifier = Modifier.fillMaxSize(),
-            contentScale = ContentScale.Crop // Fill screen, cropping if needed
+            contentScale = ContentScale.Crop
         )
 
-        // Foreground content (Welcome text + Button)
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -80,7 +79,7 @@ fun WelcomeScreen(modifier: Modifier = Modifier) {
 
             Button(
                 onClick = {
-                            val intent = Intent(context, LoginActivity::class.java)
+                            val intent = Intent(context, LoginActivity::class.java) // changer par LoginActivity pour se login
                             context.startActivity(intent)
                           },
                 colors = ButtonDefaults.buttonColors(
