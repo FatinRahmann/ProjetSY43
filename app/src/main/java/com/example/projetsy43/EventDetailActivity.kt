@@ -58,6 +58,7 @@ class EventDetailActivity : ComponentActivity() {
 //Interface utilisateur pour un evenement
 @Composable
 fun EventDetailScreen(title: String, imageUrl: String, date: String, location: String, description: String) {
+
     Box(modifier = Modifier.fillMaxSize()) {
         Column(
             modifier = Modifier
@@ -107,6 +108,9 @@ fun EventDetailScreen(title: String, imageUrl: String, date: String, location: S
                         modifier = Modifier
                             .offset(y = 20.dp)
                             .size(28.dp)
+                            .clickable{
+
+                            }
                     )
                 }
 

@@ -1,5 +1,4 @@
 package com.example.projetsy43
-
 import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -56,10 +55,10 @@ class HomeActivity : ComponentActivity() {
 }
 
 //Un evenement avec ses donnees
-data class Event(val title: String = "", val imageUrl: String = "", val date: String = "", val location: String = "", val description: String = "")
+data class Event(val title: String = "", val imageUrl: String = "", val date: String = "", val location: String = "", val description: String = "", val addresse: String = "")
 
 //Permet de recuperer la liste des event depuis la BD
-fun fetchEvents(onResult: (List<Event>) -> Unit) {
+public fun fetchEvents(onResult: (List<Event>) -> Unit) {
     val dbRef = FirebaseDatabase.getInstance("https://test-7b21e-default-rtdb.europe-west1.firebasedatabase.app").getReference("events")
     dbRef.get().addOnSuccessListener { snapshot ->
         val events = snapshot.children.mapNotNull { it.getValue(Event::class.java) }
@@ -209,6 +208,7 @@ fun HomeScreen() {
                         intent.putExtra("date", event.date)
                         intent.putExtra("location", event.location)
                         intent.putExtra("description", event.description)
+                        intent.putExtra("lieu précis", event.addresse)
                         context.startActivity(intent)
                     }
                 }
@@ -242,13 +242,15 @@ fun HomeScreen() {
                             context.startActivity(intent)
                         }
                 )
+
                 Icon(
                     painter = painterResource(id = R.drawable.ic_map),
                     contentDescription = "Favoris",
                     modifier = Modifier
                         .size(24.dp)
                         .clickable {
-
+                            val intent = Intent(context, MapsActivity::class.java)
+                            context.startActivity(intent)
                         }
                 )
                 Icon(
