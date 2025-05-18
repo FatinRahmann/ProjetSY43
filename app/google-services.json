@@ -1,6 +1,7 @@
 {
   "project_info": {
     "project_number": "323916745882",
+    "firebase_url": "https://test-7b21e-default-rtdb.europe-west1.firebasedatabase.app",
     "project_id": "test-7b21e",
     "storage_bucket": "test-7b21e.firebasestorage.app"
   },
@@ -14,6 +15,9 @@
       },
       "oauth_client": [],
       "api_key": [
+        {
+          "current_key": "AIzaSyASOB5lCSbvUb_099uIGVjOmxd78KuAqk8"
+        },
         {
           "current_key": "AIzaSyCqozvblIhd-p4ZL3Kod4_AGSa4_RSb3QQ"
         }
@@ -33,6 +37,9 @@
       },
       "oauth_client": [],
       "api_key": [
+        {
+          "current_key": "AIzaSyASOB5lCSbvUb_099uIGVjOmxd78KuAqk8"
+        },
         {
           "current_key": "AIzaSyCqozvblIhd-p4ZL3Kod4_AGSa4_RSb3QQ"
         }
