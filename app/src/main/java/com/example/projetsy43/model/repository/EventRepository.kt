@@ -45,7 +45,7 @@ class EventRepository {
         if (event.cid.isEmpty()) {
             val newId = databaseReference.push().key
             if (newId == null) {
-                cont.resume(Result.failure(Exception("Failed to generate new ID")))
+                cont.resume(Result.failure(Exception("Failed to generate event ID")))
                 return@suspendCancellableCoroutine
             }
             event.cid = newId
@@ -126,6 +126,17 @@ class EventRepository {
             }
         })
     }
+
+    suspend fun deleteEventCoroutine(eventId : String) : Result<Unit> = suspendCancellableCoroutine { cont ->
+        databaseReference.child(eventId).removeValue()
+            .addOnSuccessListener {
+                cont.resume(Result.success(Unit)) // Successfully deleted
+            }
+            .addOnFailureListener { exception ->
+                cont.resume(Result.failure(exception)) // Deletion failed with error
+            }
+    }
+
 
     /**
      * Deletes an Event by its ID.
