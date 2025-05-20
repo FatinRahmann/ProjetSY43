@@ -2,8 +2,8 @@ package com.example.projetsy43.model
 
 //Datetime either store as Long either as String
 
-data class Order_ticket(
-    val order_id : String = "",
+data class Order(
+    var order_id : String = "",
     val customer_id : String = "",
     val seller_id : String = "",
     val event_id : String = "",

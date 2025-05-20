@@ -2,7 +2,7 @@ package com.example.projetsy43.model
 
 
 data class Ticket(
-    val tid: String = "",
+    var tid: String = "",
     val concert_id: String = "",
     val costumer_id: String = "",
     //Might add fields like sit, date, etc... When needed!
