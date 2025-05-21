@@ -95,5 +95,7 @@ class EventRepository {
             }
     }
 
+    //Faire function pour pouvoir recuperer evenements liees a un seller
+
 
 }
