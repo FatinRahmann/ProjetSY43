@@ -1,6 +1,6 @@
-package com.example.projetsy43.repository
+package com.example.projetsy43.model.repository
 
-import com.example.projetsy43.model.Ticket
+import com.example.projetsy43.model.entities.Ticket
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase

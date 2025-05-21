@@ -1,4 +1,4 @@
-package com.example.projetsy43.model
+package com.example.projetsy43.model.entities
 
 //Datetime either store as Long either as String
 

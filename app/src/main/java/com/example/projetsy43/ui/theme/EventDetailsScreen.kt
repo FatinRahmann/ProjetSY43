@@ -35,7 +35,7 @@ import coil.compose.AsyncImage
 import com.example.projetsy43.R
 import com.example.projetsy43.factory.EventDetailsViewModelFactory
 import com.example.projetsy43.factory.HomeViewModelFactory
-import com.example.projetsy43.repository.EventRepository
+import com.example.projetsy43.model.repository.EventRepository
 import com.example.projetsy43.viewmodel.EventDetailsViewModel
 import com.example.projetsy43.viewmodel.HomeViewModel
 //TODO: Remake this page cleaner avoiding the multiple If calls to check if event object is not null

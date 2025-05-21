@@ -1,4 +1,4 @@
-package com.example.projetsy43.model
+package com.example.projetsy43.model.entities
 
 
 data class Ticket(

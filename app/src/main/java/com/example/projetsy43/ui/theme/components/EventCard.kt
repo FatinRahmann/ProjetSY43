@@ -24,7 +24,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.rememberAsyncImagePainter
-import com.example.projetsy43.model.Event
+import com.example.projetsy43.model.entities.Event
 
 // Carte individuelle dans le HomeScreen pour chaque event
 @Composable

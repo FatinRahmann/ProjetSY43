@@ -1,7 +1,7 @@
 package com.example.projetsy43.factory
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import com.example.projetsy43.repository.EventRepository
+import com.example.projetsy43.model.repository.EventRepository
 import com.example.projetsy43.viewmodel.AddEventViewModel
 
 class AddEventViewModelFactory (

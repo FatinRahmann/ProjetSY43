@@ -1,6 +1,6 @@
-package com.example.projetsy43.repository
+package com.example.projetsy43.model.repository
 
-import com.example.projetsy43.model.Order
+import com.example.projetsy43.model.entities.Order
 import com.google.firebase.database.*
 import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlin.coroutines.resume

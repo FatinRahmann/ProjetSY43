@@ -2,8 +2,8 @@ package com.example.projetsy43.viewmodel
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.projetsy43.model.Event
-import com.example.projetsy43.repository.EventRepository
+import com.example.projetsy43.model.entities.Event
+import com.example.projetsy43.model.repository.EventRepository
 import kotlinx.coroutines.launch
 //TODO: In all viewModel evaluate the need of setting some variables to private
 class EventDetailsViewModel(

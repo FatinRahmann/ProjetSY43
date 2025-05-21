@@ -3,9 +3,8 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
-import com.example.projetsy43.model.Event
-import com.example.projetsy43.model.UserSession
-import com.example.projetsy43.repository.EventRepository
+import com.example.projetsy43.model.entities.Event
+import com.example.projetsy43.model.repository.EventRepository
 
 class AddEventViewModel(
     private val repository: EventRepository

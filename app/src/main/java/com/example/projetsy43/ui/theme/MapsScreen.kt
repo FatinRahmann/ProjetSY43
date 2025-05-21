@@ -15,7 +15,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.example.projetsy43.R
 import com.example.projetsy43.factory.HomeViewModelFactory
-import com.example.projetsy43.repository.EventRepository
+import com.example.projetsy43.model.repository.EventRepository
 import com.example.projetsy43.viewmodel.HomeViewModel
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap

@@ -20,7 +20,7 @@ import androidx.compose.material3.Text
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavController
 import com.example.projetsy43.factory.AddEventViewModelFactory
-import com.example.projetsy43.repository.EventRepository
+import com.example.projetsy43.model.repository.EventRepository
 
 import com.example.projetsy43.ui.theme.components.EventTextField
 import com.example.projetsy43.viewmodel.AddEventViewModel

@@ -1,5 +1,5 @@
-package com.example.projetsy43.repository
-import com.example.projetsy43.model.Event
+package com.example.projetsy43.model.repository
+import com.example.projetsy43.model.entities.Event
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase

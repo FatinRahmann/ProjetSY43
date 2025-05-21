@@ -2,12 +2,11 @@ package com.example.projetsy43.viewmodel
 import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.projetsy43.repository.EventRepository
-import com.example.projetsy43.model.Event
+import com.example.projetsy43.model.repository.EventRepository
+import com.example.projetsy43.model.entities.Event
 import kotlinx.coroutines.launch
 
 class HomeViewModel(
