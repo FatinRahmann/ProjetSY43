@@ -3,8 +3,10 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.example.projetsy43.model.entities.Event
 import com.example.projetsy43.model.repository.EventRepository
+import kotlinx.coroutines.launch
 
 class AddEventViewModel(
     private val repository: EventRepository
@@ -37,14 +39,16 @@ class AddEventViewModel(
             attraction = attraction
         )
 
-        repository.addOrUpdateEvent(newEvent) { success, errorMsg ->
-            if (success) {
-                // Handle success, e.g. notify UI, clear form, navigate, etc.
-                println("Event saved successfully!")
-            } else {
-                // Handle error, e.g. show error message to user
-                println("Failed to save event: $errorMsg")
-            }
+        viewModelScope.launch {
+            val result = repository.addOrUpdateEvent(newEvent)
+            result.fold(
+                onSuccess = {
+                    //TODO: do something here
+                },
+                onFailure = { error ->
+                    //TODO:do something here
+                }
+            )
         }
 
     }

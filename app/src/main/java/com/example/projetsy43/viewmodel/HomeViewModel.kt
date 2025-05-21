@@ -27,7 +27,7 @@ class HomeViewModel(
     fun fetchEvents() {
         viewModelScope.launch {
             try {
-                val events = repository.getEventsCoroutine()
+                val events = repository.getEvents()
                 allEvents = events
                 Log.d("HomeViewModel", "Fetched events: ${events.size}")
             } catch (e: Exception) {

@@ -16,7 +16,7 @@ class EventDetailsViewModel(
         //TODO: Handle here, in case eventId = 0000 do something to show event not found or wathever, SEE ConcertNavGraph
         viewModelScope.launch {
             try {
-                val result = repository.getEventByIdCoroutine(eventId)
+                val result = repository.getEventById(eventId)
                 eventState.value = result
             } catch (e : Exception) {
                 //Handle error here

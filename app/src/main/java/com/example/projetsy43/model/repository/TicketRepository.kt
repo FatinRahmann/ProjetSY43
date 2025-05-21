@@ -19,29 +19,8 @@ class TicketRepository {
      * If the Ticket ID (tid) is empty, generates a new unique ID automatically.
      *
      * @param ticket The Ticket object to add or update.
-     * @param onComplete Callback invoked with success status and optional error message.
      */
-    fun addOrUpdateTicket(ticket: Ticket, onComplete: (Boolean, String?) -> Unit) {
-        if (ticket.tid.isEmpty()) {
-            val newId = databaseReference.push().key
-            if (newId == null) {
-                onComplete(false, "Failed to generate new ID")
-                return
-            }
-            ticket.tid = newId
-        }
-
-        // Save the event under its ID in the database
-        databaseReference.child(ticket.tid).setValue(ticket)
-            .addOnSuccessListener {
-                onComplete(true, null) // Success callback
-            }
-            .addOnFailureListener { exception ->
-                onComplete(false, exception.message) // Failure callback with error message
-            }
-    }
-
-    suspend fun addOrUpdateTicketCoroutine(ticket: Ticket): Result<Unit> = suspendCancellableCoroutine { cont ->
+    suspend fun addOrUpdateTicket(ticket: Ticket): Result<Unit> = suspendCancellableCoroutine { cont ->
         if (ticket.tid.isEmpty()) {
             val newId = databaseReference.push().key
             if (newId == null) {
@@ -64,31 +43,9 @@ class TicketRepository {
 
     /**
      * Retrieves all Tickets from the database.
-     *
-     * @param onTicketsLoaded Callback invoked with the list of Tickets.
-     * @param onError Callback invoked with an error message if retrieval fails.
+     * @return List<Ticket> List with all tickets
      */
-    fun getAllTickets(
-        onTicketsLoaded: (List<Ticket>) -> Unit,
-        onError: (String) -> Unit
-    ) {
-        databaseReference.addListenerForSingleValueEvent(object : ValueEventListener {
-            override fun onDataChange(snapshot: DataSnapshot) {
-                val tickets = mutableListOf<Ticket>()
-                for (child in snapshot.children) {
-                    val ticket = child.getValue(Ticket::class.java)
-                    ticket?.let { tickets.add(it) }
-                }
-                onTicketsLoaded(tickets)
-            }
-
-            override fun onCancelled(error: DatabaseError) {
-                onError(error.message)
-            }
-        })
-    }
-
-    suspend fun getAllTicketsCoroutine(): List<Ticket> = suspendCancellableCoroutine { cont ->
+    suspend fun getAllTickets(): List<Ticket> = suspendCancellableCoroutine { cont ->
         databaseReference.addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
                 val tickets = mutableListOf<Ticket>()
@@ -109,32 +66,9 @@ class TicketRepository {
      * Retrieves all Tickets for a specific costumer_id.
      *
      * @param costumerId The concert ID to filter tickets by.
-     * @param onTicketsLoaded Callback invoked with the filtered list of Tickets.
-     * @param onError Callback invoked with an error message if retrieval fails.
+     * @return List<Ticket> list with all tickets, can be empty
      */
-    fun getTicketsByCostumerId(
-        costumerId: String,
-        onTicketsLoaded: (List<Ticket>) -> Unit,
-        onError: (String) -> Unit
-    ) {
-        databaseReference.orderByChild("costumer_id").equalTo(costumerId)
-            .addListenerForSingleValueEvent(object : ValueEventListener {
-                override fun onDataChange(snapshot: DataSnapshot) {
-                    val tickets = mutableListOf<Ticket>()
-                    for (child in snapshot.children) {
-                        val ticket = child.getValue(Ticket::class.java)
-                        ticket?.let { tickets.add(it) }
-                    }
-                    onTicketsLoaded(tickets)
-                }
-
-                override fun onCancelled(error: DatabaseError) {
-                    onError(error.message)
-                }
-            })
-    }
-
-    suspend fun getTicketsByCostumerIdCoroutine(costumerId: String): List<Ticket> = suspendCancellableCoroutine { cont ->
+    suspend fun getTicketsByCostumerId(costumerId: String): List<Ticket> = suspendCancellableCoroutine { cont ->
         databaseReference.orderByChild("costumer_id").equalTo(costumerId)
             .addListenerForSingleValueEvent(object : ValueEventListener {
                 override fun onDataChange(snapshot: DataSnapshot) {
@@ -156,15 +90,8 @@ class TicketRepository {
      * Deletes a Ticket by its ID.
      *
      * @param ticketId The unique ID of the Ticket to delete.
-     * @param onComplete Callback invoked with success status and optional error message.
      */
-    fun deleteTicket(ticketId: String, onComplete: (Boolean, String?) -> Unit) {
-        databaseReference.child(ticketId).removeValue()
-            .addOnSuccessListener { onComplete(true, null) }
-            .addOnFailureListener { ex -> onComplete(false, ex.message) }
-    }
-
-    suspend fun deleteTicketCoroutine(ticketId: String): Result<Unit> = suspendCancellableCoroutine { cont ->
+    suspend fun deleteTicket(ticketId: String): Result<Unit> = suspendCancellableCoroutine { cont ->
         databaseReference.child(ticketId).removeValue()
             .addOnSuccessListener { cont.resume(Result.success(Unit)) }
             .addOnFailureListener { exception -> cont.resume(Result.failure(exception)) }
@@ -174,24 +101,9 @@ class TicketRepository {
      * Retrieves a single Ticket by its ID.
      *
      * @param ticketId The unique ID of the Ticket to retrieve.
-     * @param onTicketLoaded Callback invoked with the Ticket object or null if not found.
-     * @param onError Callback invoked with an error message if retrieval fails.
+     * @return Ticket? ticket object or null
      */
-    fun getTicketById(
-        ticketId: String,
-        onTicketLoaded: (Ticket?) -> Unit,
-        onError: (String) -> Unit
-    ) {
-        databaseReference.child(ticketId).get()
-            .addOnSuccessListener { snapshot ->
-                val ticket = snapshot.getValue(Ticket::class.java)
-                onTicketLoaded(ticket)
-            }
-            .addOnFailureListener { ex -> onError(ex.message ?: "Unknown error") }
-    }
-
-
-    suspend fun getTicketByIdCoroutine(ticketId: String): Ticket? = suspendCancellableCoroutine { cont ->
+    suspend fun getTicketById(ticketId: String): Ticket? = suspendCancellableCoroutine { cont ->
         databaseReference.child(ticketId).get()
             .addOnSuccessListener { snapshot ->
                 val ticket = snapshot.getValue(Ticket::class.java)
