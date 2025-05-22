@@ -25,12 +25,15 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
+import androidx.navigation.NavOptionsBuilder
 import com.example.projetsy43.R
 import com.example.projetsy43.factory.HomeViewModelFactory
+import com.example.projetsy43.model.UserSession
 import com.example.projetsy43.ui.theme.components.EventCard
 import com.example.projetsy43.model.repository.EventRepository
 import com.example.projetsy43.viewmodel.HomeViewModel
@@ -70,7 +73,7 @@ fun HomeScreen(navController: NavHostController) {
                 // icon location + redirection vers la page de profil
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     Icon(
-                        painter = painterResource(id = R.drawable.ic_lugar),
+                        painter = painterResource(id = R.drawable.ic_map),
                         contentDescription = "Location",
                         modifier = Modifier.size(20.dp)
                     )
@@ -140,30 +143,36 @@ fun HomeScreen(navController: NavHostController) {
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                // redirige vers HomeScreen (actualise)
-                Icon(
-                    painter = painterResource(id = R.drawable.ic_house),
-                    contentDescription = "Accueil",
-                    modifier = Modifier
-                        .size(24.dp)
-                        .clickable {
-                            navController.navigate("home") {
-                                popUpTo("home") { inclusive = true }
-                            }
-                        }
-                )
 
-                //For testing the add event
-                Icon(
-                    painter = painterResource(id = R.drawable.ic_house),
-                    contentDescription = "AddEvent",
-                    modifier = Modifier
-                        .size(24.dp)
-                        .clickable {
-                            navController.navigate("addevent")
+                when (UserSession.currentUser?.role) {
+                    "seller" -> {
+                        //For testing the add event
+                        Icon(
+                            painter = painterResource(id = R.drawable.sell),
+                            contentDescription = "AddEvent",
+                            modifier = Modifier
+                                .size(24.dp)
+                                .clickable {
+                                    navController.navigate("addevent")
 
-                        }
-                )
+                                }
+                        )
+                    }
+                    "buyer" -> {
+                        // redirige vers HomeScreen (actualise)
+                        Icon(
+                            painter = painterResource(id = R.drawable.ic_house),
+                            contentDescription = "Accueil",
+                            modifier = Modifier
+                                .size(24.dp)
+                                .clickable {
+                                    navController.navigate("home") {
+                                        popUpTo("home") { inclusive = true }
+                                    }
+                                }
+                        )
+                    }
+                }
 
                 // redirige vers la carte
                 Icon(
@@ -176,7 +185,7 @@ fun HomeScreen(navController: NavHostController) {
                         }
                 )
 
-                // en cours ou à venir
+                // en cours ou à venir (TODO)
                 Icon(
                     painter = painterResource(id = R.drawable.ic_favoris),
                     contentDescription = "Favoris",
@@ -192,3 +201,5 @@ fun HomeScreen(navController: NavHostController) {
         }
     }
 }
+
+

@@ -26,6 +26,9 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.projetsy43.R
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.FirebaseDatabase
+import com.example.projetsy43.model.entities.User
+import com.example.projetsy43.model.UserSession.currentUser
 
 @Composable
 fun LoginScreen(navController: NavController) {
@@ -82,8 +85,23 @@ fun LoginScreen(navController: NavController) {
                     auth.signInWithEmailAndPassword(email, password)
                         .addOnCompleteListener { task ->
                             if (task.isSuccessful) {
-                                navController.navigate("home") {
-                                    popUpTo("login") { inclusive = true } // optional: removes login from backstack
+                                //to get the role of user
+                              val uid = auth.currentUser?.uid ?: return@addOnCompleteListener
+                                val dbRef = FirebaseDatabase.getInstance().reference.child("user").child(uid)
+
+                                dbRef.get().addOnSuccessListener { snapshot ->
+                                    val user = User(
+                                        uid = uid,
+                                        email = snapshot.child("email").value?.toString() ?: "",
+                                        prenom = snapshot.child("prenom").value?.toString() ?: "",
+                                        nom = snapshot.child("nom").value?.toString() ?: "",
+                                        role = snapshot.child("role").value?.toString() ?: ""
+                                    )
+                                    currentUser = user
+
+                                    navController.navigate("home") {
+                                        popUpTo("login") { inclusive = true }
+                                    }
                                 }
                             } else {
                                 errorMessage = task.exception?.message ?: "Erreur inconnue"
