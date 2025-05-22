@@ -2,6 +2,8 @@ package com.example.projetsy43.ui.theme
 
 import android.content.Context
 import android.widget.Toast
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -18,17 +20,20 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
+import com.example.projetsy43.R
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
 
 @Composable
 fun RegisterScreen(navController: NavHostController) {
     val context = LocalContext.current
-
+    var passwordVisible by remember { mutableStateOf(false) }
     var prenom by remember { mutableStateOf("") }
     var nom by remember { mutableStateOf("") }
     var email by remember { mutableStateOf("") }
@@ -72,8 +77,20 @@ fun RegisterScreen(navController: NavHostController) {
                 value = password,
                 onValueChange = { password = it },
                 label = { Text("Password") },
-                visualTransformation = PasswordVisualTransformation(),
-                modifier = Modifier.fillMaxWidth().padding(bottom = 24.dp)
+                visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
+                modifier = Modifier.fillMaxWidth().padding(bottom = 24.dp),
+                // add toggle password
+                trailingIcon = {
+                    val iconRes =
+                        if (passwordVisible) R.drawable.visibility else R.drawable.visibilityoff
+                    Image(
+                        painter = painterResource(id = iconRes),
+                        contentDescription = if (passwordVisible) "Cacher" else "Afficher",
+                        modifier = Modifier
+                            .clickable { passwordVisible = !passwordVisible }
+                            .padding(8.dp)
+                    )
+                }
             )
 
             Button(onClick = {
@@ -92,7 +109,7 @@ fun RegisterScreen(navController: NavHostController) {
     }
 }
 
-// Keep this function as-is, no changes needed
+
 fun registerProfile(prenom: String, nom: String, email: String, password: String, context: Context) {
     val auth = FirebaseAuth.getInstance()
     val database = FirebaseDatabase.getInstance().reference
