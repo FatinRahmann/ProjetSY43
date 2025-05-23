@@ -31,10 +31,12 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavHostController
 import coil.compose.AsyncImage
 import com.example.projetsy43.R
 import com.example.projetsy43.factory.EventDetailsViewModelFactory
 import com.example.projetsy43.factory.HomeViewModelFactory
+import com.example.projetsy43.model.UserSession
 import com.example.projetsy43.model.repository.EventRepository
 import com.example.projetsy43.viewmodel.EventDetailsViewModel
 import com.example.projetsy43.viewmodel.HomeViewModel
@@ -42,7 +44,8 @@ import com.example.projetsy43.viewmodel.HomeViewModel
 // Interface utilisateur pour un evenement
 @Composable
 fun EventDetailScreen(
-    eventId : String
+    eventId : String,
+    navController: NavHostController
 ) {
 
     val repository = remember { EventRepository() }
@@ -91,13 +94,12 @@ fun EventDetailScreen(
                             .size(28.dp)
                             .offset(y = 20.dp)
                             .clickable {
-                                // Back navigation
-                                // We'll update this later with navController.popBackStack()
+                                navController.popBackStack()
                             },
                         tint = Color.Black
                     )
 
-                    // Icon favoris sans clickable pour le moment
+                    // TODO : Favourite Page
                     Icon(
                         painter = painterResource(id = R.drawable.ic_favoris),
                         contentDescription = "favoris",
@@ -209,20 +211,34 @@ fun EventDetailScreen(
                 .height(85.dp)
                 .background(Color.LightGray)
         ) {
-            // Bouton d'achat
-            Button(
-                onClick = { /* action à venir */ },
-                colors = ButtonDefaults.buttonColors(
-                    contentColor = Color.White,
-                    containerColor = Color.Black
-                ),
-                modifier = Modifier
-                    .align(Alignment.Center)
-                    .fillMaxWidth(0.6f)
-                    .height(50.dp)
-            ) {
-                Text("Purchase Now", fontSize = 18.sp)
+
+            // Button purchase now for buyers
+            when (UserSession.currentUser?.role) {
+                "buyer" -> {
+                    Button(
+                        onClick = { /* action à venir */ },
+                        colors = ButtonDefaults.buttonColors(
+                            contentColor = Color.White,
+                            containerColor = Color.Black
+                        ),
+                        modifier = Modifier
+                            .align(Alignment.Center)
+                            .fillMaxWidth(0.6f)
+                            .height(50.dp)
+                    ) {
+                        Text("Purchase Now", fontSize = 18.sp)
+                    }
+                }
+                "seller" -> {
+                    Text(
+                        text = "Sellers cannot purchase tickets.",
+                        modifier = Modifier.align(Alignment.Center),
+                        color = Color.DarkGray
+                    )
+                }
             }
         }
     }
 }
+
+
