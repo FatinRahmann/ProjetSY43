@@ -87,7 +87,6 @@ fun HomeScreen(navController: NavHostController) {
                     modifier = Modifier
                         .size(28.dp)
                         .clickable {
-                            // remplace Intent vers ProfileActivity
                             navController.navigate("profile")
                         }
                 )

@@ -11,6 +11,7 @@ import com.example.projetsy43.ui.theme.MapsScreen
 import com.example.projetsy43.ui.theme.RegisterScreen
 import com.example.projetsy43.ui.theme.WelcomeScreen
 import com.example.projetsy43.ui.theme.screens.AddEventScreen
+import com.example.projetsy43.ui.theme.screens.ProfileScreen
 
 @Composable
 fun ConcertNavGraph(navController: NavHostController) {
@@ -22,12 +23,21 @@ fun ConcertNavGraph(navController: NavHostController) {
         composable("eventDetail/{cid}") { backStackEntry ->
             //TODO: Here see EventDetailsViewModel todo
             val cid = backStackEntry.arguments?.getString("cid") ?: "0000"
-            EventDetailScreen(eventId = cid)
+            EventDetailScreen(eventId = cid,navController = navController)
         }
         composable("maps") {MapsScreen(navController)}
         composable("addevent") { AddEventScreen(navController) }
 
-
+        composable("profile") {
+            ProfileScreen(
+                navController = navController, // ✅ pass this
+                onLogout = {
+                    navController.navigate("login") {
+                        popUpTo("welcome") { inclusive = true }
+                    }
+                }
+            )
+        }
 
 
     }
