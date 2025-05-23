@@ -70,6 +70,7 @@ dependencies {
     implementation(libs.play.services.maps)
     implementation(libs.androidx.appcompat)
     implementation(libs.androidx.constraintlayout)
+    implementation(libs.androidx.navigation.compose.android)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -85,6 +86,8 @@ dependencies {
     implementation ("com.google.firebase:firebase-auth:21.0.5")
     implementation("com.google.android.gms:play-services-maps:19.2.0")
     implementation ("androidx.navigation:navigation-compose:2.7.3")
+    testImplementation("org.junit.jupiter:junit-jupiter-api:5.10.0")
+    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.10.0")
 
 
 

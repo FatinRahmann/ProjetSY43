@@ -19,6 +19,8 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -28,18 +30,37 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavHostController
 import coil.compose.AsyncImage
 import com.example.projetsy43.R
-
+import com.example.projetsy43.factory.EventDetailsViewModelFactory
+import com.example.projetsy43.factory.HomeViewModelFactory
+import com.example.projetsy43.model.UserSession
+import com.example.projetsy43.model.repository.EventRepository
+import com.example.projetsy43.viewmodel.EventDetailsViewModel
+import com.example.projetsy43.viewmodel.HomeViewModel
+//TODO: Remake this page cleaner avoiding the multiple If calls to check if event object is not null
 // Interface utilisateur pour un evenement
 @Composable
 fun EventDetailScreen(
-    title: String,
-    imageUrl: String = "",
-    date: String = "Unknown",
-    location: String = "Unknown",
-    description: String = "No description for the moment"
+    eventId : String,
+    navController: NavHostController
 ) {
+
+    val repository = remember { EventRepository() }
+    val viewModel: EventDetailsViewModel = viewModel(
+        factory = EventDetailsViewModelFactory(repository)
+    )
+
+    LaunchedEffect(Unit) {
+        viewModel.loadEventById(eventId)
+    }
+
+    val event = viewModel.eventState.value
+
+
+
     Box(modifier = Modifier.fillMaxSize()) {
         Column(
             modifier = Modifier.fillMaxSize(),
@@ -73,13 +94,12 @@ fun EventDetailScreen(
                             .size(28.dp)
                             .offset(y = 20.dp)
                             .clickable {
-                                // Back navigation
-                                // We'll update this later with navController.popBackStack()
+                                navController.popBackStack()
                             },
                         tint = Color.Black
                     )
 
-                    // Icon favoris sans clickable pour le moment
+                    // TODO : Favourite Page
                     Icon(
                         painter = painterResource(id = R.drawable.ic_favoris),
                         contentDescription = "favoris",
@@ -94,27 +114,31 @@ fun EventDetailScreen(
             }
 
             // Vérifie si l'image n'est pas vide puis l'affiche via Coil
-            if (imageUrl.isNotBlank()) {
-                AsyncImage(
-                    model = imageUrl,
-                    contentDescription = title,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(220.dp),
-                    contentScale = ContentScale.Crop
-                )
+            if (event != null) {
+                if (event.cover_image.isNotBlank()) {
+                    AsyncImage(
+                        model = event.cover_image,
+                        contentDescription = event.name,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(220.dp),
+                        contentScale = ContentScale.Crop
+                    )
+                }
             }
 
             Spacer(modifier = Modifier.height(30.dp))
 
             // Récupère titre de la BD et l'affiche
-            Text(
-                text = title,
-                fontWeight = FontWeight.Bold,
-                fontSize = 24.sp,
-                modifier = Modifier.fillMaxWidth(),
-                textAlign = TextAlign.Center
-            )
+            if (event != null) {
+                Text(
+                    text = event.name,
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 24.sp,
+                    modifier = Modifier.fillMaxWidth(),
+                    textAlign = TextAlign.Center
+                )
+            }
 
             Spacer(modifier = Modifier.height(20.dp))
 
@@ -127,16 +151,18 @@ fun EventDetailScreen(
             ) {
                 Icon(
                     painter = painterResource(id = R.drawable.ic_lugar),
-                    contentDescription = "location",
+                    contentDescription = "address",
                     modifier = Modifier.size(40.dp)
                 )
                 Spacer(modifier = Modifier.width(6.dp))
-                Text(
-                    text = location,
-                    fontSize = 20.sp,
-                    modifier = Modifier.fillMaxWidth(),
-                    textAlign = TextAlign.Start
-                )
+                if (event != null) {
+                    Text(
+                        text = event.address,
+                        fontSize = 20.sp,
+                        modifier = Modifier.fillMaxWidth(),
+                        textAlign = TextAlign.Start
+                    )
+                }
             }
 
             Spacer(modifier = Modifier.height(10.dp))
@@ -154,23 +180,27 @@ fun EventDetailScreen(
                     modifier = Modifier.size(40.dp)
                 )
                 Spacer(modifier = Modifier.width(6.dp))
-                Text(
-                    text = date,
-                    fontSize = 20.sp,
-                    modifier = Modifier.fillMaxWidth(),
-                    textAlign = TextAlign.Start
-                )
+                if (event != null) {
+                    Text(
+                        text = event.datetime,
+                        fontSize = 20.sp,
+                        modifier = Modifier.fillMaxWidth(),
+                        textAlign = TextAlign.Start
+                    )
+                }
             }
 
             Spacer(modifier = Modifier.height(20.dp))
 
             // Description
-            Text(
-                text = description,
-                fontSize = 16.sp,
-                modifier = Modifier.padding(top = 24.dp),
-                textAlign = TextAlign.Justify
-            )
+            if (event != null) {
+                Text(
+                    text = event.description,
+                    fontSize = 16.sp,
+                    modifier = Modifier.padding(top = 24.dp),
+                    textAlign = TextAlign.Justify
+                )
+            }
         }
 
         // Barre inferieure grise
@@ -181,20 +211,34 @@ fun EventDetailScreen(
                 .height(85.dp)
                 .background(Color.LightGray)
         ) {
-            // Bouton d'achat
-            Button(
-                onClick = { /* action à venir */ },
-                colors = ButtonDefaults.buttonColors(
-                    contentColor = Color.White,
-                    containerColor = Color.Black
-                ),
-                modifier = Modifier
-                    .align(Alignment.Center)
-                    .fillMaxWidth(0.6f)
-                    .height(50.dp)
-            ) {
-                Text("Purchase Now", fontSize = 18.sp)
+
+            // Button purchase now for buyers
+            when (UserSession.currentUser?.role) {
+                "buyer" -> {
+                    Button(
+                        onClick = { /* action à venir */ },
+                        colors = ButtonDefaults.buttonColors(
+                            contentColor = Color.White,
+                            containerColor = Color.Black
+                        ),
+                        modifier = Modifier
+                            .align(Alignment.Center)
+                            .fillMaxWidth(0.6f)
+                            .height(50.dp)
+                    ) {
+                        Text("Purchase Now", fontSize = 18.sp)
+                    }
+                }
+                "seller" -> {
+                    Text(
+                        text = "Sellers cannot purchase tickets.",
+                        modifier = Modifier.align(Alignment.Center),
+                        color = Color.DarkGray
+                    )
+                }
             }
         }
     }
 }
+
+

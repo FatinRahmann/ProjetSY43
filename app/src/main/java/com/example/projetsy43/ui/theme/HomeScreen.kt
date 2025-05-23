@@ -1,6 +1,5 @@
 package com.example.projetsy43.ui.theme
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -17,119 +16,45 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
-import coil.compose.rememberAsyncImagePainter
+import androidx.navigation.NavOptionsBuilder
 import com.example.projetsy43.R
-import com.google.firebase.database.FirebaseDatabase
+import com.example.projetsy43.factory.HomeViewModelFactory
+import com.example.projetsy43.model.UserSession
+import com.example.projetsy43.ui.theme.components.EventCard
+import com.example.projetsy43.model.repository.EventRepository
+import com.example.projetsy43.viewmodel.HomeViewModel
 
-// Un evenement avec ses donnees
-data class Event(
-    val title: String = "",
-    val imageUrl: String = "",
-    val date: String = "",
-    val location: String = "",
-    val description: String = "",
-    val addresse: String = ""
-)
-
-// Permet de recuperer la liste des event depuis la BD
-fun fetchEvents(onResult: (List<Event>) -> Unit) {
-    val dbRef = FirebaseDatabase.getInstance("https://test-7b21e-default-rtdb.europe-west1.firebasedatabase.app")
-        .getReference("events")
-    dbRef.get().addOnSuccessListener { snapshot ->
-        val events = snapshot.children.mapNotNull { it.getValue(Event::class.java) }
-        onResult(events) // transmet la liste
-    }
-}
-
-// Carte individuelle dans le HomeScreen pour chaque event
-@Composable
-fun EventCard(event: Event, onClick: () -> Unit) {
-
-    // definit affichage des cartes
-    Card(
-        modifier = Modifier
-            .width(160.dp)
-            .height(200.dp)
-            .clickable { onClick() }, // appel de l'action quand on clique
-        shape = RoundedCornerShape(12.dp),
-        colors = CardDefaults.cardColors(containerColor = Color.White)
-    ) {
-        Column {
-            // recupere image de la BD
-            Image(
-                painter = rememberAsyncImagePainter(event.imageUrl),
-                contentDescription = event.title,
-                contentScale = ContentScale.Crop,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(120.dp)
-            )
-
-            Box(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .background(Color.LightGray) // couleur fond
-                    .padding(8.dp),
-                contentAlignment = Alignment.Center
-            ) {
-                Column(horizontalAlignment = Alignment.Start) {
-                    // recupere titre et lieu de l'evenement
-                    Text(
-                        text = event.title,
-                        fontSize = 16.sp,
-                        color = Color.Black,
-                        fontWeight = FontWeight.Bold,
-                        maxLines = 1
-                    )
-                    Spacer(modifier = Modifier.height(4.dp))
-                    Text(
-                        text = event.location,
-                        fontSize = 12.sp,
-                        color = Color.DarkGray,
-                        maxLines = 1
-                    )
-                }
-            }
-        }
-    }
-}
 
 // Affiche ecran d'acceuil HomeScreen
 @Composable
 fun HomeScreen(navController: NavHostController) {
+    //TODO: Annalyse the actual need for the factory and application of Hilt
+    val repository = remember { EventRepository() }
+    val viewModel: HomeViewModel = viewModel(
+        factory = HomeViewModelFactory(repository)
+    )
 
-    var searchQuery by remember { mutableStateOf("") } // contenu barre de recherche
-    var allEvents by remember { mutableStateOf<List<Event>>(emptyList()) } // liste des events charges depuis Firebase
+    var searchQuery = viewModel.searchQuery // contenu barre de recherche
+    var allEvents = viewModel.allEvents // liste des events charges depuis Firebase
+    var filteredEvents = viewModel.filteredEvents
 
-    // chargement des donnees recuperer via fetchEvents
+    //TODO: Here might want to add something while its charging
     LaunchedEffect(Unit) {
-        fetchEvents { allEvents = it }
-    }
-
-    // filtrage selon la recherche
-    val filteredEvents = allEvents.filter {
-        it.title.contains(searchQuery, ignoreCase = true)
+        viewModel.fetchEvents()
     }
 
     Box(modifier = Modifier.fillMaxSize()) {
@@ -148,7 +73,7 @@ fun HomeScreen(navController: NavHostController) {
                 // icon location + redirection vers la page de profil
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     Icon(
-                        painter = painterResource(id = R.drawable.ic_lugar),
+                        painter = painterResource(id = R.drawable.ic_map),
                         contentDescription = "Location",
                         modifier = Modifier.size(20.dp)
                     )
@@ -162,7 +87,6 @@ fun HomeScreen(navController: NavHostController) {
                     modifier = Modifier
                         .size(28.dp)
                         .clickable {
-                            // remplace Intent vers ProfileActivity
                             navController.navigate("profile")
                         }
                 )
@@ -171,7 +95,7 @@ fun HomeScreen(navController: NavHostController) {
             // barre de recherche avec icône
             OutlinedTextField(
                 value = searchQuery,
-                onValueChange = { searchQuery = it },
+                onValueChange = { viewModel.searchQuery = it },
                 placeholder = { Text("Events, Artist") },
                 leadingIcon = {
                     Icon(
@@ -197,7 +121,7 @@ fun HomeScreen(navController: NavHostController) {
                 items(filteredEvents) { event ->
                     EventCard(event = event) {
                         // remplacer Intent par une route dynamique
-                        navController.navigate("eventDetail/${event.title}")
+                        navController.navigate("eventDetail/${event.cid}")
                     }
                 }
             }
@@ -218,18 +142,36 @@ fun HomeScreen(navController: NavHostController) {
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                // redirige vers HomeScreen (actualise)
-                Icon(
-                    painter = painterResource(id = R.drawable.ic_house),
-                    contentDescription = "Accueil",
-                    modifier = Modifier
-                        .size(24.dp)
-                        .clickable {
-                            navController.navigate("home") {
-                                popUpTo("home") { inclusive = true }
-                            }
-                        }
-                )
+
+                when (UserSession.currentUser?.role) {
+                    "seller" -> {
+                        //For testing the add event
+                        Icon(
+                            painter = painterResource(id = R.drawable.sell),
+                            contentDescription = "AddEvent",
+                            modifier = Modifier
+                                .size(24.dp)
+                                .clickable {
+                                    navController.navigate("addevent")
+
+                                }
+                        )
+                    }
+                    "buyer" -> {
+                        // redirige vers HomeScreen (actualise)
+                        Icon(
+                            painter = painterResource(id = R.drawable.ic_house),
+                            contentDescription = "Accueil",
+                            modifier = Modifier
+                                .size(24.dp)
+                                .clickable {
+                                    navController.navigate("home") {
+                                        popUpTo("home") { inclusive = true }
+                                    }
+                                }
+                        )
+                    }
+                }
 
                 // redirige vers la carte
                 Icon(
@@ -242,7 +184,7 @@ fun HomeScreen(navController: NavHostController) {
                         }
                 )
 
-                // en cours ou à venir
+                // en cours ou à venir (TODO)
                 Icon(
                     painter = painterResource(id = R.drawable.ic_favoris),
                     contentDescription = "Favoris",
@@ -258,3 +200,5 @@ fun HomeScreen(navController: NavHostController) {
         }
     }
 }
+
+
