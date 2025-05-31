@@ -12,6 +12,8 @@ import com.example.projetsy43.ui.theme.RegisterScreen
 import com.example.projetsy43.ui.theme.WelcomeScreen
 import com.example.projetsy43.ui.theme.screens.AddEventScreen
 import com.example.projetsy43.ui.theme.screens.ProfileScreen
+import com.example.projetsy43.ui.theme.screens.TicketQrViewScreen
+import com.example.projetsy43.ui.theme.screens.TicketsListScreen
 
 @Composable
 fun ConcertNavGraph(navController: NavHostController) {
@@ -38,7 +40,13 @@ fun ConcertNavGraph(navController: NavHostController) {
                 }
             )
         }
-
+        composable("ticketslist") { TicketsListScreen(navController) }
+        composable("ticketqrcode/{ticketnumber}/{eventname}/{addr}/{date}") { backStackEntry ->
+            val ticketnumber = (backStackEntry.arguments?.getString("ticketnumber") ?: "0").toInt()
+            val eventname = backStackEntry.arguments?.getString("eventname") ?: "No name"
+            val addr = backStackEntry.arguments?.getString("addr") ?: "No address"
+            val date = backStackEntry.arguments?.getString("date") ?: "No date"
+            TicketQrViewScreen(ticketnumber, eventname, addr, date, navController) }
 
     }
 }

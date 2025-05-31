@@ -18,6 +18,7 @@ class EventRepository {
      * If the Event ID is empty, generates a new unique ID automatically.
      * @param event The Event object to add or update.
      * @param onComplete Callback for completion status (success or failure).
+     * TODO: Handle adding an image to the drawable ressources
      */
     suspend fun addOrUpdateEvent(event: Event) : Result<Unit> = suspendCancellableCoroutine { cont ->
         // If no ID is set, generate a new key from Firebase push()

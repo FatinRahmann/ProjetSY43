@@ -111,6 +111,7 @@ fun HomeScreen(navController: NavHostController) {
             Spacer(modifier = Modifier.height(12.dp))
 
             // affichage des events filtrés en grille
+            //TODO: Have to show the picture do like the eventdetails
             LazyVerticalGrid(
                 columns = GridCells.Fixed(2),
                 verticalArrangement = Arrangement.spacedBy(16.dp),
@@ -168,6 +169,18 @@ fun HomeScreen(navController: NavHostController) {
                                     navController.navigate("home") {
                                         popUpTo("home") { inclusive = true }
                                     }
+                                }
+                        )
+
+                        //redirect towards tickets view page
+                        Icon(
+                            painter = painterResource(id = R.drawable.sell),
+                            contentDescription = "TicketsView",
+                            modifier = Modifier
+                                .size(24.dp)
+                                .clickable {
+                                    //TODO: Change here
+                                    navController.navigate("ticketslist")
                                 }
                         )
                     }
