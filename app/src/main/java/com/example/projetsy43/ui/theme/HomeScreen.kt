@@ -25,17 +25,15 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
-import androidx.navigation.NavOptionsBuilder
 import com.example.projetsy43.R
 import com.example.projetsy43.factory.HomeViewModelFactory
 import com.example.projetsy43.model.UserSession
-import com.example.projetsy43.ui.theme.components.EventCard
 import com.example.projetsy43.model.repository.EventRepository
+import com.example.projetsy43.ui.theme.components.EventCard
 import com.example.projetsy43.viewmodel.HomeViewModel
 
 
@@ -184,12 +182,17 @@ fun HomeScreen(navController: NavHostController) {
                         }
                 )
 
-                // en cours ou à venir (TODO)
+                // redirige vers les evenements 'favorite'
                 Icon(
                     painter = painterResource(id = R.drawable.ic_favoris),
                     contentDescription = "Favoris",
-                    modifier = Modifier.size(24.dp)
+                    modifier = Modifier
+                        .size(24.dp)
+                        .clickable {
+                            navController.navigate("favorites")
+                        }
                 )
+
 
                 Icon(
                     painter = painterResource(id = R.drawable.ic_ticket),
