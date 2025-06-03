@@ -29,7 +29,7 @@ data class Event(
     val type : String = "",
     val price: Double = 0.0,
     val capacity: Int = 0,
-    val avaliablecapacity : Int = 0,
+    var avaliablecapacity : Int = 0,
     val cover_image : String = "defaultroute", //Here add the default route!
     val attraction: String = "", //Find a way here to represent many artists: First idea, artists separated by coma
 )

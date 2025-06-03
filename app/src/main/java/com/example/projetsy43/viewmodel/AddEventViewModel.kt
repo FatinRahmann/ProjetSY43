@@ -4,17 +4,20 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.projetsy43.model.UserSession
 import com.example.projetsy43.model.entities.Event
 import com.example.projetsy43.model.repository.EventRepository
 import kotlinx.coroutines.launch
+import kotlinx.datetime.LocalDateTime
 
 class AddEventViewModel(
     private val repository: EventRepository
 ) : ViewModel() {
+    //TODO: Have to handle the adding of an image as a drawable
     var cid by mutableStateOf("") //This one have to find logic later
     var name by mutableStateOf("")
     var description by mutableStateOf("No description was added yet")
-    var datetime by mutableStateOf("") // We can later use a better type for date/time
+    var datetime by mutableStateOf<LocalDateTime?>(null)
     var address by mutableStateOf("")
     var sellerId by mutableStateOf("")
     var type by mutableStateOf("")
@@ -24,22 +27,27 @@ class AddEventViewModel(
     var coverImage by mutableStateOf("defaultroute")
     var attraction by mutableStateOf("")
 
+
     fun onSubmitEvent() {
-        val newEvent = Event(
-            name = name,
-            description = description,
-            datetime = "0000-00-00 00:00:00",
-            address = address,
-            seller_id = "100",
-            type = type,
-            price = price,
-            capacity = capacity,
-            avaliablecapacity = 100,
-            cover_image = coverImage,
-            attraction = attraction
-        )
 
         viewModelScope.launch {
+
+            val user = UserSession.currentUser?: return@launch
+
+            val newEvent = Event(
+                name = name,
+                description = description,
+                datetime = datetime.toString(),
+                address = address,
+                seller_id = user.uid,
+                type = type,
+                price = price,
+                capacity = capacity,
+                avaliablecapacity = 100,
+                cover_image = coverImage,
+                attraction = attraction
+            )
+
             val result = repository.addOrUpdateEvent(newEvent)
             result.fold(
                 onSuccess = {
