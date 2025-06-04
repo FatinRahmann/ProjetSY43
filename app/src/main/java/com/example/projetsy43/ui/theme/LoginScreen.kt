@@ -133,7 +133,7 @@ fun LoginScreen(navController: NavController) {
                                         role = snapshot.child("role").value?.toString() ?: ""
                                     )
                                     currentUser = user
-                                    showToast("Bienvenue, ${user.prenom}!", ToastType.SUCCESS)
+                                    showToast("Welcome Back, ${user.prenom}!", ToastType.SUCCESS)
                                     shouldNavigate = true
                                 }
                             } else {
