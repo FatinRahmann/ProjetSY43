@@ -11,6 +11,7 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -29,14 +30,53 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
 import com.example.projetsy43.model.entities.User
 import com.example.projetsy43.model.UserSession.currentUser
+import com.example.projetsy43.ui.theme.components.AppToast
+import com.example.projetsy43.ui.theme.components.ToastType
 
 @Composable
 fun LoginScreen(navController: NavController) {
     var passwordVisible by remember { mutableStateOf(false) }
-
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     var errorMessage by remember { mutableStateOf("") }
+    var shouldNavigate by remember { mutableStateOf(false) }
+
+    // Toast variables :
+    var toastVisible by remember { mutableStateOf(false) }
+    var toastType by remember { mutableStateOf(ToastType.SUCCESS) }
+    var toastMessage by remember { mutableStateOf("") }
+
+    // Helper
+    fun showToast(msg: String, type: ToastType) {
+        toastMessage = msg
+        toastType = type
+        toastVisible = true
+    }
+
+
+    LaunchedEffect(errorMessage) {
+        if (errorMessage.isNotEmpty()) {
+            showToast(errorMessage, ToastType.ERROR)
+        }
+    }
+
+    LaunchedEffect(shouldNavigate) {
+        if (shouldNavigate) {
+            kotlinx.coroutines.delay(1000)
+            navController.navigate("home") {
+                popUpTo("login") { inclusive = true }
+            }
+        }
+    }
+
+    // Toast UI
+    AppToast(
+        message = toastMessage,
+        visible = toastVisible,
+        type = toastType
+    ) {
+        toastVisible = false
+    }
 
     Box(
         modifier = Modifier
@@ -74,11 +114,6 @@ fun LoginScreen(navController: NavController) {
                 }
             )
 
-
-            if (errorMessage.isNotEmpty()) {
-                Text(text = errorMessage, color = Color.Red, modifier = Modifier.padding(bottom = 16.dp))
-            }
-
             Button(
                 onClick = {
                     val auth = FirebaseAuth.getInstance()
@@ -98,10 +133,8 @@ fun LoginScreen(navController: NavController) {
                                         role = snapshot.child("role").value?.toString() ?: ""
                                     )
                                     currentUser = user
-
-                                    navController.navigate("home") {
-                                        popUpTo("login") { inclusive = true }
-                                    }
+                                    showToast("Welcome Back, ${user.prenom}!", ToastType.SUCCESS)
+                                    shouldNavigate = true
                                 }
                             } else {
                                 errorMessage = task.exception?.message ?: "Erreur inconnue"
