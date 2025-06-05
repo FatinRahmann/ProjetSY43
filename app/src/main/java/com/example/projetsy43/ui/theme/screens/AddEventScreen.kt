@@ -66,7 +66,7 @@ fun AddEventScreen(
 
     var EventCoverHasFocused by remember { mutableStateOf(false) }
     var EventCoverText by remember { mutableStateOf("Veillez rajouter une image") }
-    
+
 
     //Page items
     Column (modifier = Modifier.padding(16.dp))
