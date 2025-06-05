@@ -12,23 +12,33 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material.icons.outlined.FavoriteBorder
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.rememberAsyncImagePainter
+import com.example.projetsy43.model.FavoritesManager
 import com.example.projetsy43.model.entities.Event
 
 // Carte individuelle dans le HomeScreen pour chaque event
 @Composable
 fun EventCard(event: Event, onClick: () -> Unit) {
+
+    val context = LocalContext.current
+    val isFavorite = FavoritesManager.isFavorite(context, event.cid)
 
     // definit affichage des cartes
     Card(
@@ -40,15 +50,35 @@ fun EventCard(event: Event, onClick: () -> Unit) {
         colors = CardDefaults.cardColors(containerColor = Color.White)
     ) {
         Column {
-            // recupere image de la BD
-            Image(
-                painter = rememberAsyncImagePainter(event.cover_image),
-                contentDescription = event.name,
-                contentScale = ContentScale.Crop,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(120.dp)
-            )
+
+            Box {
+                // recupere image de la BD
+                Image(
+                    painter = rememberAsyncImagePainter(event.cover_image),
+                    contentDescription = event.name,
+                    contentScale = ContentScale.Crop,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(120.dp)
+                )
+
+                // icone coeur (favoris)
+                IconButton(
+                    onClick = {
+                        FavoritesManager.toggleFavorite(context, event.cid)
+                    },
+                    modifier = Modifier
+                        .align(Alignment.TopEnd)
+                        .padding(4.dp)
+                ) {
+                    Icon(
+                        imageVector = if (isFavorite) Icons.Filled.Favorite else Icons.Outlined.FavoriteBorder,
+                        contentDescription = "Toggle Favorite",
+                        tint = Color.Red
+
+                    )
+                }
+            }
 
             Box(
                 modifier = Modifier

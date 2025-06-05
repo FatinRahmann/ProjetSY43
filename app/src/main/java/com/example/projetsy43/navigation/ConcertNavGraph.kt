@@ -1,9 +1,15 @@
 package com.example.projetsy43.navigation
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.remember
+import androidx.compose.ui.platform.LocalContext
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import com.example.projetsy43.factory.HomeViewModelFactory
+import com.example.projetsy43.model.repository.EventRepository
 import com.example.projetsy43.ui.theme.EventDetailScreen
 import com.example.projetsy43.ui.theme.HomeScreen
 import com.example.projetsy43.ui.theme.LoginScreen
@@ -11,9 +17,12 @@ import com.example.projetsy43.ui.theme.MapsScreen
 import com.example.projetsy43.ui.theme.RegisterScreen
 import com.example.projetsy43.ui.theme.WelcomeScreen
 import com.example.projetsy43.ui.theme.screens.AddEventScreen
+import com.example.projetsy43.ui.theme.screens.FavoritesScreen
 import com.example.projetsy43.ui.theme.screens.ProfileScreen
 import com.example.projetsy43.ui.theme.screens.TicketQrViewScreen
 import com.example.projetsy43.ui.theme.screens.TicketsListScreen
+import com.example.projetsy43.viewmodel.HomeViewModel
+
 
 @Composable
 fun ConcertNavGraph(navController: NavHostController) {
@@ -40,6 +49,31 @@ fun ConcertNavGraph(navController: NavHostController) {
                 }
             )
         }
+        composable("favorites") {
+            val context = LocalContext.current
+            val repository = remember { EventRepository() }
+            val homeViewModel: HomeViewModel = viewModel(
+                factory = HomeViewModelFactory(repository)
+            )
+
+
+            LaunchedEffect(Unit) {
+                homeViewModel.fetchEvents()
+            }
+
+            val allEvents = homeViewModel.allEvents
+
+            FavoritesScreen(
+                allEvents = allEvents,
+                onEventClick = { event ->
+                    navController.navigate("eventDetail/${event.cid}")
+                }
+            )
+        }
+
+
+
+
         composable("ticketslist") { TicketsListScreen(navController) }
         composable("ticketqrcode/{ticketnumber}/{eventname}/{addr}/{date}") { backStackEntry ->
             val ticketnumber = (backStackEntry.arguments?.getString("ticketnumber") ?: "0").toInt()
