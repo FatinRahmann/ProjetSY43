@@ -23,7 +23,6 @@ class AddEventViewModel(
     var type by mutableStateOf("")
     var price by mutableStateOf(0.0)
     var capacity by mutableStateOf(0)
-    var availableCapacity by mutableStateOf(0)
     var coverImage by mutableStateOf("defaultroute")
     var attraction by mutableStateOf("")
 
@@ -43,7 +42,7 @@ class AddEventViewModel(
                 type = type,
                 price = price,
                 capacity = capacity,
-                avaliablecapacity = 100,
+                avaliablecapacity = capacity,
                 cover_image = coverImage,
                 attraction = attraction
             )

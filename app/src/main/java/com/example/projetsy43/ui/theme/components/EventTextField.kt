@@ -9,21 +9,27 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.focus.onFocusChanged
 
 @Composable
 fun EventTextField(
     label: String,
     value: String,
     onValueChange: (String) -> Unit,
+    onFocus: (() -> Unit)? = null
 ) {
     TextField(
         value = value,
         onValueChange = onValueChange,
         label = { Text(label) },
         modifier = Modifier
-
             .fillMaxWidth()
-            .padding(vertical = 4.dp),
+            .padding(vertical = 4.dp)
+            .onFocusChanged { focusState ->
+                if (focusState.isFocused) {
+                    onFocus?.invoke()
+                }
+            },
         keyboardOptions = KeyboardOptions.Default,
         singleLine = true
     )
