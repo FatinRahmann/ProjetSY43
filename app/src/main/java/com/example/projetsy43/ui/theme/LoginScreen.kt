@@ -1,6 +1,7 @@
 package com.example.projetsy43.ui.theme
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -8,6 +9,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -69,23 +71,16 @@ fun LoginScreen(navController: NavController) {
         }
     }
 
-    // Toast UI
-    AppToast(
-        message = toastMessage,
-        visible = toastVisible,
-        type = toastType
-    ) {
-        toastVisible = false
-    }
 
     Box(
         modifier = Modifier
             .fillMaxSize()
+            .background(MaterialTheme.colorScheme.surface)
             .padding(32.dp),
         contentAlignment = Alignment.Center
     ) {
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
-            Text("Login", fontSize = 28.sp, modifier = Modifier.padding(bottom = 24.dp))
+            Text("Login", fontSize = 28.sp, modifier = Modifier.padding(bottom = 24.dp) , color = MaterialTheme.colorScheme.onSurface)
 
             OutlinedTextField(
                 value = email,
@@ -121,7 +116,7 @@ fun LoginScreen(navController: NavController) {
                         .addOnCompleteListener { task ->
                             if (task.isSuccessful) {
                                 //to get the role of user
-                              val uid = auth.currentUser?.uid ?: return@addOnCompleteListener
+                                val uid = auth.currentUser?.uid ?: return@addOnCompleteListener
                                 val dbRef = FirebaseDatabase.getInstance().reference.child("user").child(uid)
 
                                 dbRef.get().addOnSuccessListener { snapshot ->
@@ -144,6 +139,19 @@ fun LoginScreen(navController: NavController) {
                 modifier = Modifier.fillMaxWidth()
             ) {
                 Text("Login")
+            }
+        }
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .align(Alignment.TopCenter)  // force alignment at the top
+        ) {
+            AppToast(
+                message = toastMessage,
+                visible = toastVisible,
+                type = toastType
+            ) {
+                toastVisible = false
             }
         }
     }

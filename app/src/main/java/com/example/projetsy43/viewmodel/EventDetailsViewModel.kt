@@ -19,6 +19,8 @@ import kotlinx.datetime.LocalDateTime
 import network.chaintech.kmp_date_time_picker.utils.now
 
 //TODO: In all viewModel evaluate the need of setting some variables to private
+
+// ViewModel that manages state and logic for the EventDetailScreen
 class EventDetailsViewModel(
     private val eventRepo: EventRepository,
     private val ticketRepo: TicketRepository,
@@ -26,34 +28,62 @@ class EventDetailsViewModel(
 
 ) : ViewModel() {
 
-    var eventState = mutableStateOf<Event?>(null)
-    var price by mutableDoubleStateOf(0.0)
-    var amount by mutableIntStateOf(0)
-    var avaliablecapacity by mutableIntStateOf(0)
-    var alertMessage by mutableStateOf<String?>(null)
+    var eventState = mutableStateOf<Event?>(null) // Holds the event details
+    var price by mutableDoubleStateOf(0.0) // Total cost based on ticket count
+    var amount by mutableIntStateOf(0) // Number of ticket user wants to buy
+    var avaliablecapacity by mutableIntStateOf(0) // Remaining tickets
+    var alertMessage by mutableStateOf<String?>(null) // For toast alerts
         private set
 
     fun clearAlert() {
         alertMessage = null
     }
 
+    // Returns true and sets a toast if user exceeds ticket limits
     fun setAlert() : Boolean {
         if (amount >= 4) {
-            alertMessage = "An user can only buy a maximum of 4 tickets!"
+            showToast ("One user can only buy a maximum of 4 tickets!")
             return true
         }
         if (amount >= avaliablecapacity) {
-            alertMessage = "You have selected all tickets!"
+            showToast("You have selected all tickets!")
             return true
         }
         return false
     }
 
+    // Toast Logic
+    var isToastVisible by mutableStateOf(false)
+        private set
+
+    fun showToast(message: String) {
+        alertMessage = message
+        isToastVisible = true
+    }
+
+    fun dismissToast() {
+        isToastVisible = false
+        alertMessage = null
+    }
+
+    // Loads event details by ID, and initializes price, amount, and capacity
     fun loadEventById(eventId : String) {
-        //TODO: Handle here, in case eventId = 0000 do something to show event not found or wathever, SEE ConcertNavGraph
+
         viewModelScope.launch {
             try {
+                // Handle if id == 0000
+                if(eventId == "0000"){
+                    showToast("Event Not Found")
+                    return@launch
+                }
+
                 val result = eventRepo.getEventById(eventId)
+
+                if (result == null){
+                    showToast("No event found with this ID")
+                    return@launch
+                }
+
                 eventState.value = result
                 eventState.value?.let { e ->
                     price = e.price
@@ -61,27 +91,30 @@ class EventDetailsViewModel(
                     avaliablecapacity = e.avaliablecapacity
                 }
             } catch (e : Exception) {
-                //Handle error here
+                Log.e("EventDetailsViewModel" , "Error loading event: ${e.message}")
+                showToast("Error loading event . Please try again")
             }
         }
     }
 
+    // Handle Ticket + Order Purchase Logic
     fun buyTicket() {
         viewModelScope.launch {
             try {
-                //TODO: Handle an error here such as printing a message if theres not event value etc...
+                // Validate that both event and user are available
                 var event = eventState.value ?: return@launch
                 val user = UserSession.currentUser ?: return@launch
                 //val ticketamount = (price / event.price).toInt()
 
+
+                // Check ticket capacity
                 if (amount > avaliablecapacity) {
-                    //TODO: add an alert here as there arent enough
-                    //TODO: Maybe pass this logic inside of the increment button
+                    showToast("Not enough tickets available.")
                     Log.d("EventDetailsViewModel", "Not enough capacity")
                     return@launch
                 }
 
-
+                // Add tickets one by one to database
                 for (t in 1..amount) {
                     val newTicket = Ticket(
                         concert_id = event.cid,
@@ -99,12 +132,12 @@ class EventDetailsViewModel(
                     }
 
                     Log.d("HomeViewModel", "Ticket successfully added")
-
-
                 }
 
+                // Reduce available capacity after purchase
                 avaliablecapacity -= amount
 
+                // Create and insert the order
                 val newOrder = Order(
                     customer_id = user.uid,
                     seller_id = event.seller_id,
@@ -126,6 +159,7 @@ class EventDetailsViewModel(
 
                 Log.d("HomeViewModel", "Order successfully added")
 
+                // Update event's available capacity in the firebase
                 event.avaliablecapacity = avaliablecapacity
 
                 val eventupdate = eventRepo.addOrUpdateEvent(event)
@@ -140,11 +174,12 @@ class EventDetailsViewModel(
 
 
             } catch (e: Exception) {
-                //TODO: Handle here
+                Log.e("EventDetailsViewModel", "Unexpected error during purchase: ${e.message}")
+                showToast("Something went wrong during ticket purchase.")
             }
         }
     }
-
+    // Update price after increment/decrement
     fun updatePrice() {
         eventState.value?.let {
             price = amount * it.price
@@ -153,8 +188,10 @@ class EventDetailsViewModel(
 
     }
 
+    // Increment ticket count (max 4 and within capacity)
     fun increment() {
         if (amount >= 4 || amount + 1 > avaliablecapacity) {
+            showToast("Maximum 4 tickets per user.")
             Log.d("EventDetailsViewModel", "Either > 4 either amout > avaliablecapacity")
             return
         }
@@ -163,9 +200,10 @@ class EventDetailsViewModel(
         updatePrice()
     }
 
+    // Decrement ticket count (minimum 1)
     fun decrement() {
         if (amount <= 1) {
-            //Handle here
+            showToast("Min Purchase ticket : 1")
             return
         }
         amount--
@@ -173,6 +211,7 @@ class EventDetailsViewModel(
         updatePrice()
     }
 
+    // Shows total price or "Sold Out" if no more tickets
     fun getPurchaseButtonTest() : String {
         if(avaliablecapacity == 0) {
             return "This event was sold out!"
@@ -180,6 +219,27 @@ class EventDetailsViewModel(
             return price.toString()
         }
     }
+
+    // Shared Viewmodel for payment
+    fun prepareForPayment(eventId: String, amt: Int, totalPrice: Float) {
+        eventState.value?.cid?.let {
+            if (it == eventId) {
+                amount = amt
+                price = totalPrice.toDouble()
+            } else {
+                // Event mismatch: load new event
+                loadEventById(eventId)
+                amount = amt
+                price = totalPrice.toDouble()
+            }
+        } ?: run {
+            // No event loaded yet
+            loadEventById(eventId)
+            amount = amt
+            price = totalPrice.toDouble()
+        }
+    }
+
 
 
 }
