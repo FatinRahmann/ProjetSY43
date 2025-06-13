@@ -40,7 +40,7 @@ android {
     }
     buildFeatures {
         compose = true
-        viewBinding = true
+        viewBinding = false
     }
 }
 
@@ -89,6 +89,11 @@ dependencies {
     testImplementation("org.junit.jupiter:junit-jupiter-api:5.10.0")
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.10.0")
     implementation("network.chaintech:kmp-date-time-picker:1.0.5")
+
+
+
+
+
 
     implementation(libs.vico.compose)
     implementation(libs.vico.compose.m2)

@@ -35,6 +35,10 @@ import network.chaintech.kmp_date_time_picker.utils.now
 import androidx.compose.ui.graphics.RectangleShape
 
 
+
+
+
+
 //TODO: Control the values on the fields!
 @Composable
 fun AddEventScreen(
@@ -66,6 +70,17 @@ fun AddEventScreen(
 
     var EventCoverHasFocused by remember { mutableStateOf(false) }
     var EventCoverText by remember { mutableStateOf("Veillez rajouter une image") }
+
+    //verif champs
+    val isFormValid = viewModel.name.isNotBlank()
+            && viewModel.description.isNotBlank()
+            && viewModel.address.isNotBlank()
+            && viewModel.type.isNotBlank()
+            && viewModel.coverImage.isNotBlank()
+            && viewModel.attraction.isNotBlank()
+            && viewModel.datetime != null
+            && viewModel.price > 0.0
+            && viewModel.capacity > 0
 
 
     //Page items
@@ -101,8 +116,10 @@ fun AddEventScreen(
             onValueChange = { newText ->
                 priceText = newText
                 val parsed = newText.toDoubleOrNull()
-                if (parsed != null) {
+                if (parsed != null && parsed >= 0.0) {
                     viewModel.price = parsed
+                } else {
+                    viewModel.price = -1.0
                 }
             },
             onFocus = {
@@ -116,8 +133,10 @@ fun AddEventScreen(
             newText ->
             capacityText = newText
             val parsed = newText.toIntOrNull()
-            if (parsed != null) {
+            if (parsed != null && parsed > 0) {
                 viewModel.capacity = parsed
+            } else {
+                viewModel.capacity = -1
             }
 
         },
@@ -184,8 +203,15 @@ fun AddEventScreen(
             }
 
             Spacer(modifier = Modifier.height(16.dp))
-            Button(onClick = viewModel::onSubmitEvent, modifier = Modifier.fillMaxWidth()) {
-                Text("Create Event")
+            Button(
+                onClick = viewModel::onSubmitEvent,
+                modifier = Modifier
+                    .fillMaxWidth(),
+                enabled = isFormValid
+            ) {
+                Text(
+                    "Create Event"
+                )
             }
         }
 

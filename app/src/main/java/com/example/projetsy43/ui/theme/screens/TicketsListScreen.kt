@@ -1,6 +1,8 @@
 package com.example.projetsy43.ui.theme.screens
 
 import android.util.Log
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.lazy.LazyColumn
@@ -19,6 +21,7 @@ import com.example.projetsy43.model.entities.Event
 import com.example.projetsy43.ui.theme.components.TicketComponent
 import androidx.compose.foundation.lazy.items
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 
 @Composable
@@ -37,26 +40,31 @@ fun TicketsListScreen(
         viewModel.getTickets()
     }
 
-    //Display each ticket
-    LazyColumn {
-        items(ticketsList) { ticket ->
-            // Launch a coroutine to fetch the event for this ticket
-            val event = remember { mutableStateOf<Event?>(null) }
+    Box(
+        modifier = Modifier
+            .background(Color(0xFF000C1A))
+    ){
+        //Display each ticket
+        LazyColumn {
+            items(ticketsList) { ticket ->
+                // Launch a coroutine to fetch the event for this ticket
+                val event = remember { mutableStateOf<Event?>(null) }
 
-            LaunchedEffect(ticket.concert_id) {
-                event.value = viewModel.getEventData(ticket.concert_id)
-            }
-
-            event.value?.let {
-                TicketComponent(event = it) {
-                    // Button click behavior here, e.g. navigate to details
-                    //Here make the QrCode screen route
-                    Log.d("TicketsListScreen", "Button clicked")
-                    val ticketcount = viewModel.getTicketCountPerCid(it.cid)
-                    navController.navigate("ticketqrcode/${ticketcount}/${it.name}/${it.address}/${it.datetime}")
+                LaunchedEffect(ticket.concert_id) {
+                    event.value = viewModel.getEventData(ticket.concert_id)
                 }
+
+                event.value?.let {
+                    TicketComponent(event = it) {
+                        // Button click behavior here, e.g. navigate to details
+                        //Here make the QrCode screen route
+                        Log.d("TicketsListScreen", "Button clicked")
+                        val ticketcount = viewModel.getTicketCountPerCid(it.cid)
+                        navController.navigate("ticketqrcode/${ticketcount}/${it.name}/${it.address}/${it.datetime}")
+                    }
+                }
+                Spacer(modifier = Modifier.height(12.dp))
             }
-            Spacer(modifier = Modifier.height(12.dp))
         }
     }
 

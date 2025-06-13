@@ -5,6 +5,7 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -28,6 +29,7 @@ import androidx.compose.ui.unit.sp
 import com.example.projetsy43.R
 import coil.compose.AsyncImage
 import com.example.projetsy43.model.entities.Event
+import androidx.compose.foundation.border
 
 @Composable
 fun TicketComponent(
@@ -42,61 +44,70 @@ fun TicketComponent(
         drawableId != 0 -> drawableId
         else -> R.drawable.defaultroute
     }
-
-    // Use Modifier.fillMaxWidth() and set height to almost full screen height (e.g., 300-350.dp)
+    Spacer(modifier = Modifier.height(24.dp))
     Box(
         modifier = Modifier
-            .height(300.dp)
-            .width(360.dp)
+            .padding(horizontal = 16.dp)
+            .fillMaxWidth()
+            .height(250.dp)
             .clip(RoundedCornerShape(16.dp))
-            .border(1.dp, Color.Gray, RoundedCornerShape(16.dp))
+            .background(Color(0xFF001F3F))
 
-    ) {
-        Column(modifier = Modifier.fillMaxSize()) {
-            // Top bar - about 1/6 of height, gray background, event name centered
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .weight(1f)
-                    .background(Color.LightGray),
-                contentAlignment = Alignment.Center
-            ) {
-                Text(
-                    text = event.name,
-                    color = Color.Black,
-                    fontSize = 20.sp,
-                )
-            }
+    ){
+        Column (
 
-            // Image - takes about 3/6 (half) of the height
+        ){
             AsyncImage(
                 model = imageModel,
                 contentDescription = event.name,
                 modifier = Modifier
-                    .weight(3f)
-                    .fillMaxWidth(),
+                    .fillMaxWidth()
+                    .height(120.dp)
+                    .padding(horizontal = 16.dp)
+                    .padding(top = 14.dp)
+                    .clip(RoundedCornerShape(12.dp)),
                 contentScale = ContentScale.Crop
             )
-
-            // Bottom bar - about 2/6 of height, gray background, button centered
-            Box(
+            Text(
+                text = event.name,
+                color = Color.White,
+                fontSize = 16.sp,
                 modifier = Modifier
+                    .padding(top = 12.dp)
+                    .padding(horizontal = 16.dp)
+            )
+            Text(
+                text = event.datetime,
+                color = Color.White,
+                fontSize = 12.sp,
+                modifier = Modifier
+                    .padding(top = 9.dp)
+                    .padding(horizontal = 16.dp)
+                )
+            Button(
+                onClick = onButtonClick,
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = Color(0xFF001F3F),
+                    contentColor = Color(0xFF3399FF)
+                ),
+                modifier = Modifier
+                    .padding(top = 12.dp)
                     .fillMaxWidth()
-                    .weight(2f)
-                    .background(Color.LightGray),
-                contentAlignment = Alignment.Center
+                    .height(30.dp)
+                    .padding(horizontal = 16.dp)
+                    .clip(RoundedCornerShape(12.dp))
+                    .border(
+                        width = 2.dp,
+                        color = Color(0xFF3399FF),
+                        shape = RoundedCornerShape(12.dp)
+                    )
             ) {
-                Button(
-                    onClick = onButtonClick,
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = Color.Black,
-                        contentColor = Color.White
-                    ),
-                    modifier = Modifier.size(width = 120.dp, height = 40.dp)
-                ) {
-                    Text(text = "See ticket")
-                }
+                Text(text = "See Ticket")
             }
+
         }
+
+
     }
+
 }
