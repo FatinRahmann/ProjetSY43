@@ -6,8 +6,10 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.navArgument
 import com.example.projetsy43.factory.HomeViewModelFactory
 import com.example.projetsy43.model.repository.EventRepository
 import com.example.projetsy43.ui.theme.EventDetailScreen
@@ -17,6 +19,7 @@ import com.example.projetsy43.ui.theme.MapsScreen
 import com.example.projetsy43.ui.theme.RegisterScreen
 import com.example.projetsy43.ui.theme.WelcomeScreen
 import com.example.projetsy43.ui.theme.screens.AddEventScreen
+import com.example.projetsy43.ui.theme.screens.FakePayment
 import com.example.projetsy43.ui.theme.screens.FavoritesScreen
 import com.example.projetsy43.ui.theme.screens.ProfileScreen
 import com.example.projetsy43.ui.theme.screens.TicketQrViewScreen
@@ -41,7 +44,7 @@ fun ConcertNavGraph(navController: NavHostController) {
 
         composable("profile") {
             ProfileScreen(
-                navController = navController, // ✅ pass this
+                navController = navController,
                 onLogout = {
                     navController.navigate("login") {
                         popUpTo("welcome") { inclusive = true }
@@ -71,9 +74,6 @@ fun ConcertNavGraph(navController: NavHostController) {
             )
         }
 
-
-
-
         composable("ticketslist") { TicketsListScreen(navController) }
         composable("ticketqrcode/{ticketnumber}/{eventname}/{addr}/{date}") { backStackEntry ->
             val ticketnumber = (backStackEntry.arguments?.getString("ticketnumber") ?: "0").toInt()
@@ -81,6 +81,21 @@ fun ConcertNavGraph(navController: NavHostController) {
             val addr = backStackEntry.arguments?.getString("addr") ?: "No address"
             val date = backStackEntry.arguments?.getString("date") ?: "No date"
             TicketQrViewScreen(ticketnumber, eventname, addr, date, navController) }
+
+        composable(
+            route = "fakepayment/{eventId}/{amount}/{price}",
+            arguments = listOf(
+                navArgument("eventId") { type = NavType.StringType },
+                navArgument("amount") { type = NavType.IntType },
+                navArgument("price") { type = NavType.FloatType }
+            )
+        ) { backStackEntry ->
+            val eventId = backStackEntry.arguments?.getString("eventId")!!
+            val amount = backStackEntry.arguments?.getInt("amount")!!
+            val price = backStackEntry.arguments?.getFloat("price")!!
+
+            FakePayment(eventId = eventId, amount = amount, price = price, navController = navController)
+        }
 
     }
 }

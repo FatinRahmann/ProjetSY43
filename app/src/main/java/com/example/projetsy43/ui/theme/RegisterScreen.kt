@@ -3,6 +3,7 @@ package com.example.projetsy43.ui.theme
 import android.content.Context
 import android.widget.Toast
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -10,6 +11,9 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonColors
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -56,14 +60,17 @@ fun RegisterScreen(navController: NavHostController) {
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .padding(32.dp),
-        contentAlignment = Alignment.Center
+            .background(MaterialTheme.colorScheme.background)
+            .padding(16.dp),
+        contentAlignment = Alignment.Center,
+
     ) {
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
             Text(
                 text = "Register",
                 fontSize = 28.sp,
                 fontWeight = FontWeight.Bold,
+                color = MaterialTheme.colorScheme.onBackground ,
                 modifier = Modifier.padding(bottom = 24.dp)
             )
 
@@ -122,10 +129,14 @@ fun RegisterScreen(navController: NavHostController) {
                         popUpTo("register") { inclusive = true }
                     }
                 } else {
-                    Toast.makeText(context, "Veuillez remplir tous les champs", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(context, "Please Fill all the forms", Toast.LENGTH_SHORT).show()
                 }
-            }) {
-                Text("S'inscrire")
+            },
+                colors = ButtonDefaults.buttonColors(  // Corrected colors usage
+                containerColor = MaterialTheme.colorScheme.primary,
+                contentColor = MaterialTheme.colorScheme.onPrimary
+            )) {
+                Text(text="Register")
             }
         }
     }

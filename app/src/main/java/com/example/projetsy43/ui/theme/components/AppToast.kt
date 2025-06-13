@@ -31,6 +31,7 @@ fun getToastColor(type: ToastType): Color {
 fun AppToast(
     message: String,
     visible: Boolean,
+    modifier: Modifier = Modifier,
     type: ToastType = ToastType.SUCCESS,
     onDismiss: () -> Unit
 ) {
@@ -47,7 +48,7 @@ fun AppToast(
         exit = fadeOut()
     ) {
         Box(
-            modifier = Modifier
+            modifier = modifier
                 .fillMaxWidth()
                 .padding(horizontal = 16.dp)
                 .padding(top = 64.dp)
