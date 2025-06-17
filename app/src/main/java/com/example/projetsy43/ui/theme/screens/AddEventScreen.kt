@@ -1,8 +1,10 @@
+
 package com.example.projetsy43.ui.theme.screens
 
 import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -19,6 +21,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Checkbox
 import androidx.compose.material3.Text
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.graphics.Color
@@ -43,7 +46,7 @@ import androidx.compose.ui.graphics.RectangleShape
 @Composable
 fun AddEventScreen(
     navController: NavController,
-    )
+)
 {
     //ViewModel instantiation with EventRepository Injection
     val repository = remember { EventRepository() }
@@ -70,6 +73,10 @@ fun AddEventScreen(
 
     var EventCoverHasFocused by remember { mutableStateOf(false) }
     var EventCoverText by remember { mutableStateOf("Veillez rajouter une image") }
+
+    var useDefaultImage by remember { mutableStateOf(false) }
+    val defaultImageUrl = "https://cdn.pixabay.com/photo/2016/11/23/15/48/audience-1853662_1280.jpg" // change cette URL selon ton cas
+
 
     //verif champs
     val isFormValid = viewModel.name.isNotBlank()
@@ -107,7 +114,7 @@ fun AddEventScreen(
                 }
             }
 
-            )
+        )
         EventTextField("Address", viewModel.address, { viewModel.address = it})
         Dropdown("Type", listOf("Concert", "Conference", "Festival"), viewModel.type, {viewModel.type = it})
         EventTextField(
@@ -130,7 +137,7 @@ fun AddEventScreen(
             }
         )
         EventTextField("Capacity", capacityText, {
-            newText ->
+                newText ->
             capacityText = newText
             val parsed = newText.toIntOrNull()
             if (parsed != null && parsed > 0) {
@@ -147,19 +154,46 @@ fun AddEventScreen(
                 }
             })
         //TODO: Decide what to do with image adding and check if logic works, for now do not touch the defaultRoute value for image
+
+        //Checkbox to use default image
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier.padding(top = 8.dp, bottom = 8.dp)
+        ) {
+            Checkbox(
+                checked = useDefaultImage,
+                onCheckedChange = {
+                    useDefaultImage = it
+                    if (useDefaultImage) {
+                        viewModel.coverImage = defaultImageUrl
+                        EventCoverText = defaultImageUrl
+                    } else {
+                        EventCoverText = ""
+                        viewModel.coverImage = ""
+                    }
+                }
+            )
+            Text("use image par defaut")
+        }
+
+        // Text field for cover image URL
         EventTextField(
             "Cover Image URL",
             EventCoverText,
             {
                 EventCoverText = it
-                viewModel.coverImage = it },
+                viewModel.coverImage = it
+            },
             {
                 if (!EventCoverHasFocused) {
                     EventCoverText = ""
                     EventCoverHasFocused = true
                 }
-            }
+            },
+            enabled = !useDefaultImage
         )
+
+
         EventTextField("Attraction", viewModel.attraction, { viewModel.attraction = it })
 
         Column(
@@ -203,20 +237,24 @@ fun AddEventScreen(
             }
 
             Spacer(modifier = Modifier.height(16.dp))
+
+            //retour au home screen si succes
             Button(
-                onClick = viewModel::onSubmitEvent,
+                onClick = {viewModel.onSubmitEvent(
+                    onSuccess = { navController.navigate("home")}
+                )},
+                enabled = isFormValid,
+                colors = ButtonDefaults.buttonColors(containerColor = if (isFormValid) Color(0xFF007AFF) else Color.Gray),
+                shape = RectangleShape,
                 modifier = Modifier
-                    .fillMaxWidth(),
-                enabled = isFormValid
+                    .fillMaxWidth()
+
             ) {
                 Text(
                     "Create Event"
                 )
             }
         }
-
-
-
     }
 
 

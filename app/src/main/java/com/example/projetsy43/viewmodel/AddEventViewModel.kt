@@ -27,7 +27,7 @@ class AddEventViewModel(
     var attraction by mutableStateOf("")
 
 
-    fun onSubmitEvent() {
+    fun onSubmitEvent(onSuccess: () -> Unit) {
 
         viewModelScope.launch {
 
@@ -50,6 +50,8 @@ class AddEventViewModel(
             val result = repository.addOrUpdateEvent(newEvent)
             result.fold(
                 onSuccess = {
+                    // methode onSucces du bouton addEvent
+                    onSuccess()
                     //TODO: do something here
                 },
                 onFailure = { error ->

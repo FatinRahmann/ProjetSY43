@@ -16,7 +16,8 @@ fun EventTextField(
     label: String,
     value: String,
     onValueChange: (String) -> Unit,
-    onFocus: (() -> Unit)? = null
+    onFocus: (() -> Unit)? = null,
+    enabled: Boolean = true
 ) {
     TextField(
         value = value,
@@ -31,6 +32,7 @@ fun EventTextField(
                 }
             },
         keyboardOptions = KeyboardOptions.Default,
-        singleLine = true
+        singleLine = true,
+        enabled = enabled
     )
 }
