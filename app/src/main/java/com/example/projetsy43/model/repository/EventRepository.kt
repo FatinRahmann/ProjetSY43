@@ -107,7 +107,23 @@ class EventRepository {
             }
     }
 
-    //TODO: Faire function pour pouvoir recuperer evenements liees a un seller
 
 
+    suspend fun getEventsBySellerId(sellerId: String): List<Event> = suspendCancellableCoroutine { cont ->
+        databaseReference.orderByChild("seller_id").equalTo(sellerId)
+            .addListenerForSingleValueEvent(object : ValueEventListener {
+                override fun onDataChange(snapshot: DataSnapshot) {
+                    val events = mutableListOf<Event>()
+                    for (child in snapshot.children) {
+                        val event = child.getValue(Event::class.java)
+                        event?.let { events.add(it) }
+                    }
+                    cont.resume(events)
+                }
+
+                override fun onCancelled(error: DatabaseError) {
+                    cont.resumeWithException(Exception(error.message))
+                }
+            })
+    }
 }
