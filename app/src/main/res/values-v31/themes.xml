@@ -1,9 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <style name="Theme.ProjetSY43" parent="Theme.AppCompat.Light.NoActionBar" />
 
     <style name="Theme.ProjetSY43.Splash" parent="Theme.AppCompat.Light.NoActionBar">
-
+        <item name="android:windowBackground">@color/white</item>
+        <item name="android:windowSplashScreenAnimatedIcon">@drawable/logo_animated</item>
     </style>
-
 </resources>
