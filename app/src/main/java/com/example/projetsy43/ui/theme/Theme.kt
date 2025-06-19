@@ -19,6 +19,8 @@ private val LightColorScheme = lightColorScheme(
     surface = LightGray,          // Cards/dialogs
     onBackground = Black,        // Default text
     onSurface = Black,           // Text on surfaces
+    onSecondary = MiddleGray
+
 )
 
 private val DarkColorScheme = darkColorScheme(
@@ -28,6 +30,8 @@ private val DarkColorScheme = darkColorScheme(
     surface = Black,                    // Cards/dialogs
     onBackground = White,       // Default text
     onSurface = LightGrayText,          // Text on surfaces
+    onSecondary = MiddleGray
+
 )
 
 

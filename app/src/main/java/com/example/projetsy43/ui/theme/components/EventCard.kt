@@ -84,7 +84,7 @@ fun EventCard(event: Event, onClick: () -> Unit) {
                 modifier = Modifier
                     .fillMaxSize()
                     .background(Color.LightGray) // couleur fond
-                    .padding(8.dp),
+                    .padding(4.dp),
                 contentAlignment = Alignment.Center
             ) {
                 Column(horizontalAlignment = Alignment.Start) {
@@ -96,12 +96,20 @@ fun EventCard(event: Event, onClick: () -> Unit) {
                         fontWeight = FontWeight.Bold,
                         maxLines = 1
                     )
-                    Spacer(modifier = Modifier.height(4.dp))
+                    Spacer(modifier = Modifier.height(1.dp))
                     Text(
                         text = event.address,
                         fontSize = 12.sp,
                         color = Color.DarkGray,
                         maxLines = 1
+                    )
+                    Spacer(modifier = Modifier.height(1.dp))
+                    Text(
+                        text = event.attraction,
+                        fontSize = 12.sp,
+                        color = Color.DarkGray,
+                        maxLines = 1
+
                     )
                 }
             }

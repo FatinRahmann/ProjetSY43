@@ -2,7 +2,10 @@
 package com.example.projetsy43.ui.theme.screens
 
 import android.util.Log
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
@@ -19,9 +22,11 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Checkbox
+import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.graphics.Color
@@ -36,10 +41,10 @@ import network.chaintech.kmp_date_time_picker.utils.DateTimePickerView
 import network.chaintech.kmp_date_time_picker.utils.WheelPickerDefaults
 import network.chaintech.kmp_date_time_picker.utils.now
 import androidx.compose.ui.graphics.RectangleShape
-
-
-
-
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.sp
+import com.example.projetsy43.R
 
 
 //TODO: Control the values on the fields!
@@ -93,7 +98,33 @@ fun AddEventScreen(
     //Page items
     Column (modifier = Modifier.padding(16.dp))
     {
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(56.dp)
+                .background(Color.White),
+            contentAlignment = Alignment.Center
+        ) {
+            // Back Icon aligned top start
+            Icon(
+                painter = painterResource(id = R.drawable.ic_retour),
+                contentDescription = "return",
+                modifier = Modifier
+                    .align(Alignment.CenterStart)
+                    .size(28.dp)
+                    .clickable {
+                        navController.popBackStack()
+                    },
+                tint = Color.Black
+            )
 
+            Text(
+                text = "Add event",
+                fontSize = 20.sp,
+                fontWeight = FontWeight.Bold,
+                color = Color.Black
+            )
+        }
         //Event text field with its arguments
         EventTextField(
             label = "Event name",

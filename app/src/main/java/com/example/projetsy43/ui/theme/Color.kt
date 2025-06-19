@@ -13,6 +13,7 @@ val DarkGrayText = Color(0xFF333333) // Text/icons
 val DarkGray = Color(0xFF121212)   // Background
 val Black = Color(0xFF000000)      // Surface/Cards
 val LightGrayText = Color(0xFFE0E0E0) // Text/icons
+val MiddleGray = Color.LightGray
 
 // Shared Colors (Error, etc.)
 val ErrorRed = Color(0xFFCF6679)

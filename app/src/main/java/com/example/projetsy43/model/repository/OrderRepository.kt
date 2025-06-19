@@ -5,15 +5,22 @@ import com.google.firebase.database.*
 import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
-
+/**
+ * Repository responsible for managing Order data in Firebase Realtime Database.
+ *
+ * Provides suspend functions to add, update, retrieve, and delete orders asynchronously.
+ */
 class OrderRepository {
-
+    // Reference to the "orders" node in the database
     private val databaseReference = FirebaseDatabase.getInstance().getReference("orders")
+
 
     /**
      * Adds a new Order or updates an existing one in the database.
+     * If the Order's order_id is empty, a new unique ID is generated.
      *
-     * @param order The Order object to be added or updated.
+     * @param order The Order object to add or update.
+     * @return Result<Unit> indicating success or failure of the operation.
      */
     suspend fun addOrUpdateOrder(order: Order) : Result<Unit> = suspendCancellableCoroutine { cont ->
         if (order.order_id.isEmpty()) {
@@ -35,11 +42,11 @@ class OrderRepository {
             }
     }
 
-
     /**
      * Retrieves all Orders from the database.
      *
-     * @return List<Order> list with all orders
+     * @return List<Order> A list containing all orders, might be empty if no orders are found.
+     * @throws Exception If the database operation is cancelled or fails.
      */
     suspend fun getAllOrders() : List<Order> = suspendCancellableCoroutine { cont ->
         databaseReference.addListenerForSingleValueEvent(object : ValueEventListener {
@@ -58,13 +65,16 @@ class OrderRepository {
         })
     }
 
+
+    //TODO: Manage case where no orders where found but not here! In the ViewModel
+
     /**
      * Retrieves a single Order by its unique ID.
      *
      * @param orderId The unique ID of the Order to retrieve.
-     * @return Order? order object or null
+     * @return Order? The Order object if found, null otherwise.
+     * @throws Exception If the database operation is cancelled or fails.
      */
-    //TODO: Manage case where no orders where found but not here! In the ViewModel
     suspend fun getOrderById(orderId: String) : Order? = suspendCancellableCoroutine { cont->
         databaseReference.child(orderId).get()
             .addOnSuccessListener { snapshot ->
@@ -76,10 +86,13 @@ class OrderRepository {
             }
     }
 
+
     /**
      * Deletes an Order by its unique ID.
      *
      * @param orderId The unique ID of the Order to delete.
+     * @return Result<Unit> indicating whether the deletion was successful or not.
+     * @throws Exception If the database operation is cancelled or fails.
      */
     suspend fun deleteOrder(orderId: String) : Result<Unit> = suspendCancellableCoroutine { cont ->
         databaseReference.child(orderId).removeValue()
@@ -92,12 +105,12 @@ class OrderRepository {
     }
 
     /**
-     * Retrieves all Orders for a specific seller.
+     * Retrieves all Orders associated with a given seller's ID.
      *
-     * @param sellerId The seller ID to filter Orders by.
-     * @return List<Order> with the orders related to the seller, it can be empty
+     * @param sellerId The ID of the seller whose orders are to be retrieved.
+     * @return List<Order> A list containing all orders associated with the given seller ID.
+     * @throws Exception If the database operation is cancelled or fails.
      */
-
     suspend fun getOrdersBySellerId(sellerId: String) : List<Order> = suspendCancellableCoroutine { cont ->
         databaseReference.orderByChild("seller_id").equalTo(sellerId)
             .addListenerForSingleValueEvent(object : ValueEventListener {
