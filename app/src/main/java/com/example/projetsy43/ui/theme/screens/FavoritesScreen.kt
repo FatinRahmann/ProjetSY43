@@ -27,6 +27,7 @@ import com.example.projetsy43.R
 import com.example.projetsy43.model.FavoritesManager
 import com.example.projetsy43.model.entities.Event
 import com.example.projetsy43.ui.theme.components.EventCard
+import androidx.compose.ui.Alignment
 
 
 // Ecran pour afficher uniquement les événements marqués comme favoris
