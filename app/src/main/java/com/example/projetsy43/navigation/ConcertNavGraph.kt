@@ -31,18 +31,32 @@ import com.example.projetsy43.viewmodel.HomeViewModel
 @Composable
 fun ConcertNavGraph(navController: NavHostController) {
     NavHost(navController = navController, startDestination = "welcome") {
+        // Entry screen when app starts
         composable("welcome") { WelcomeScreen(navController) }
+
+        // Login screen
         composable("login") { LoginScreen(navController) }
+
+        // User registration screen
         composable("register") { RegisterScreen(navController) }
+
+        // Main home screen after login
         composable("home") { HomeScreen(navController) }
+
+        // Event detail screen with event id parameter
         composable("eventDetail/{cid}") { backStackEntry ->
             //TODO: Here see EventDetailsViewModel todo
             val cid = backStackEntry.arguments?.getString("cid") ?: "0000"
             EventDetailScreen(eventId = cid,navController = navController)
         }
+
+        // Event Map screen
         composable("maps") {MapsScreen(navController)}
+
+        // Screen to add new event
         composable("addevent") { AddEventScreen(navController) }
 
+        // User profile screen with logout action
         composable("profile") {
             ProfileScreen(
                 navController = navController,
@@ -53,6 +67,8 @@ fun ConcertNavGraph(navController: NavHostController) {
                 }
             )
         }
+
+        // Favorites screen that fetches and displays favorite events
         composable("favorites") {
             val context = LocalContext.current
             val repository = remember { EventRepository() }
@@ -71,11 +87,15 @@ fun ConcertNavGraph(navController: NavHostController) {
                 allEvents = allEvents,
                 onEventClick = { event ->
                     navController.navigate("eventDetail/${event.cid}")
-                }
+                },
+                onGoBackClick = { navController.popBackStack() }
             )
         }
 
+        // List of tickets screen
         composable("ticketslist") { TicketsListScreen(navController) }
+
+        // Ticket QR code screen
         composable("ticketqrcode/{ticketnumber}/{eventname}/{addr}/{date}") { backStackEntry ->
             val ticketnumber = (backStackEntry.arguments?.getString("ticketnumber") ?: "0").toInt()
             val eventname = backStackEntry.arguments?.getString("eventname") ?: "No name"
@@ -83,6 +103,7 @@ fun ConcertNavGraph(navController: NavHostController) {
             val date = backStackEntry.arguments?.getString("date") ?: "No date"
             TicketQrViewScreen(ticketnumber, eventname, addr, date, navController) }
 
+        // Fake payment screen
         composable(
             route = "fakepayment/{eventId}/{amount}/{price}",
             arguments = listOf(

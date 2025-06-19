@@ -2,22 +2,28 @@ package com.example.projetsy43.ui.theme.screens
 
 import android.content.Context
 import android.util.Log
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.projetsy43.R
 import com.example.projetsy43.model.FavoritesManager
 import com.example.projetsy43.model.entities.Event
 import com.example.projetsy43.ui.theme.components.EventCard
@@ -27,7 +33,8 @@ import com.example.projetsy43.ui.theme.components.EventCard
 @Composable
 fun FavoritesScreen(
     allEvents: List<Event>,
-    onEventClick: (Event) -> Unit
+    onEventClick: (Event) -> Unit,
+    onGoBackClick: () -> Unit
 ) {
     val context: Context = LocalContext.current
     val favoriteIds = FavoritesManager.getAllFavorites(context)
@@ -44,6 +51,17 @@ fun FavoritesScreen(
                 .padding(top = 50.dp, bottom = 16.dp),
 
         ) {
+
+            Icon(
+                painter = painterResource(id = R.drawable.ic_retour),
+                contentDescription = "return",
+                modifier = Modifier
+                    .align(Alignment.TopStart)  // Move icon to top left corner
+                    .size(28.dp)
+                    .clickable { onGoBackClick() },
+                tint = Color.Black
+            )
+
             Text(
                 text = "My Favorites",
                 fontSize = 26.sp,

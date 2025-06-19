@@ -20,6 +20,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -40,54 +41,66 @@ import com.example.projetsy43.model.entities.Event
 import com.example.projetsy43.ui.theme.components.TicketQrComponent
 
 @Composable
-fun TicketQrViewScreen(ticketnumber : Int, eventname: String, addr : String, date: String, navController: NavController) {
-    val pagerState = rememberPagerState(pageCount = {
-        //Here change this
-        ticketnumber
-    })
+fun TicketQrViewScreen(
+    ticketnumber: Int,
+    eventname: String,
+    addr: String,
+    date: String,
+    navController: NavController
+) {
+    val pagerState = rememberPagerState(pageCount = { ticketnumber })
 
-
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(16.dp)
-    ) {
-        // Top bar content
-        Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(bottom = 16.dp),
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            Icon(
-                painter = painterResource(id = R.drawable.ic_retour),
-                contentDescription = "return",
+    Scaffold(
+        topBar = {
+            Column(
                 modifier = Modifier
-                    .size(28.dp)
-                    .offset(y = 20.dp)
-                    .clickable {
-                        navController.popBackStack()
-                    },
-                tint = Color.Black
-            )
-            Text(
-                text = eventname,
-                style = MaterialTheme.typography.headlineSmall,
-                fontWeight = FontWeight.Bold
-            )
-            Text(
-                text = addr,
-                style = MaterialTheme.typography.bodyMedium
-            )
-            Text(
-                text = date,
-                style = MaterialTheme.typography.bodySmall
-            )
+                    .fillMaxWidth()
+                    .padding(16.dp)
+                ,
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Box(
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Icon(
+                        painter = painterResource(id = R.drawable.ic_retour),
+                        contentDescription = "return",
+                        modifier = Modifier
+                            .align(Alignment.CenterStart)
+                            .size(28.dp)
+                            .clickable {
+                                navController.popBackStack()
+                            },
+                        tint = Color.Black
+                    )
 
+                    Text(
+                        text = eventname,
+                        style = MaterialTheme.typography.headlineSmall,
+                        fontWeight = FontWeight.Bold,
+                        modifier = Modifier.align(Alignment.Center)
+                    )
+                }
+
+                Text(
+                    text = addr,
+                    style = MaterialTheme.typography.bodyMedium,
+                    modifier = Modifier.padding(top = 4.dp)
+                )
+
+                Text(
+                    text = date,
+                    style = MaterialTheme.typography.bodySmall,
+                    modifier = Modifier.padding(top = 2.dp)
+                )
+            }
         }
-
-        // Pager content
-        Box(modifier = Modifier.weight(1f)) {
+    ) { paddingValues ->
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(paddingValues)
+        ) {
             HorizontalPager(
                 state = pagerState,
                 modifier = Modifier.fillMaxSize()
@@ -106,7 +119,7 @@ fun TicketQrViewScreen(ticketnumber : Int, eventname: String, addr : String, dat
                     .padding(bottom = 8.dp),
                 horizontalArrangement = Arrangement.Center
             ) {
-                repeat(pagerState.pageCount) { iteration ->
+                repeat(ticketnumber) { iteration ->
                     val color = if (pagerState.currentPage == iteration) Color.DarkGray else Color.LightGray
                     Box(
                         modifier = Modifier

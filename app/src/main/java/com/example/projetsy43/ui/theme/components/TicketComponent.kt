@@ -30,6 +30,7 @@ import com.example.projetsy43.R
 import coil.compose.AsyncImage
 import com.example.projetsy43.model.entities.Event
 import androidx.compose.foundation.border
+import androidx.compose.material3.MaterialTheme
 
 @Composable
 fun TicketComponent(
@@ -51,7 +52,7 @@ fun TicketComponent(
             .fillMaxWidth()
             .height(250.dp)
             .clip(RoundedCornerShape(16.dp))
-            .background(Color(0xFF001F3F))
+            .background(Color.LightGray)
 
     ){
         Column (
@@ -70,7 +71,7 @@ fun TicketComponent(
             )
             Text(
                 text = event.name,
-                color = Color.White,
+                color = MaterialTheme.colorScheme.onSurface,
                 fontSize = 16.sp,
                 modifier = Modifier
                     .padding(top = 12.dp)
@@ -78,7 +79,7 @@ fun TicketComponent(
             )
             Text(
                 text = event.datetime,
-                color = Color.White,
+                color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f),
                 fontSize = 12.sp,
                 modifier = Modifier
                     .padding(top = 9.dp)
@@ -87,8 +88,8 @@ fun TicketComponent(
             Button(
                 onClick = onButtonClick,
                 colors = ButtonDefaults.buttonColors(
-                    containerColor = Color(0xFF001F3F),
-                    contentColor = Color(0xFF3399FF)
+                    containerColor = MaterialTheme.colorScheme.primary,  // primary color for button bg
+                    contentColor = MaterialTheme.colorScheme.onPrimary
                 ),
                 modifier = Modifier
                     .padding(top = 12.dp)
@@ -96,11 +97,11 @@ fun TicketComponent(
                     .height(30.dp)
                     .padding(horizontal = 16.dp)
                     .clip(RoundedCornerShape(12.dp))
-                    .border(
+                    /*.border(
                         width = 2.dp,
-                        color = Color(0xFF3399FF),
+                        color = MaterialTheme.colorScheme.primary,
                         shape = RoundedCornerShape(12.dp)
-                    )
+                    )*/
             ) {
                 Text(text = "See Ticket")
             }

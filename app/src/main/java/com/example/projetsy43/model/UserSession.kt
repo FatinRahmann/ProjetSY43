@@ -4,14 +4,20 @@ import androidx.compose.runtime.mutableStateListOf
 import com.example.projetsy43.model.entities.Ticket
 import com.example.projetsy43.model.entities.User
 
-//Singleton for accessing current user data and keeping the shopping cart and maybe favorites
+/**
+ * Singleton object to manage the current user session throughout the app.
+ *
+ * This includes:
+ * - Storing the currently logged-in user data.
+ *
+ *  @property currentUser the currently logged-in user or null if no user is logged in.
+ */
 object UserSession {
 
     var currentUser: User? = null
+    //TODO: Remove all of the non used attributes
     val cartItems = mutableStateListOf<Ticket>()
 
-    //add methods as needed!
-    //implement methods related to the shopping kart
     fun isLoggedIn(): Boolean = currentUser != null
 
 }

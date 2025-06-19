@@ -8,17 +8,23 @@ import com.google.firebase.database.ValueEventListener
 import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
-
+/**
+ * Repository responsible for managing Ticket data in Firebase Realtime Database.
+ *
+ * Provides suspend functions to add, update, retrieve, and delete tickets asynchronously.
+ */
 class TicketRepository {
 
     // Reference to the "tickets" node in Firebase Realtime Database
     private val databaseReference = FirebaseDatabase.getInstance().getReference("tickets")
 
+
     /**
-     * Adds a new Ticket or updates an existing one.
-     * If the Ticket ID (tid) is empty, generates a new unique ID automatically.
+     * Adds a new Ticket or updates an existing one in the database.
+     * If the Ticket's ID is empty, a new unique ID is generated.
      *
      * @param ticket The Ticket object to add or update.
+     * @return Result<Unit> indicating success or failure of the operation.
      */
     suspend fun addOrUpdateTicket(ticket: Ticket): Result<Unit> = suspendCancellableCoroutine { cont ->
         if (ticket.tid.isEmpty()) {
@@ -41,9 +47,12 @@ class TicketRepository {
 
 
 
+
     /**
      * Retrieves all Tickets from the database.
-     * @return List<Ticket> List with all tickets
+     *
+     * @return List<Ticket> A list containing all tickets, might be empty if no tickets are found.
+     * @throws Exception If the database operation is cancelled or fails.
      */
     suspend fun getAllTickets(): List<Ticket> = suspendCancellableCoroutine { cont ->
         databaseReference.addListenerForSingleValueEvent(object : ValueEventListener {
@@ -62,11 +71,13 @@ class TicketRepository {
         })
     }
 
+
     /**
-     * Retrieves all Tickets for a specific costumer_id.
+     * Retrieves all Tickets associated with a specific customer's ID.
      *
-     * @param costumerId The concert ID to filter tickets by.
-     * @return List<Ticket> list with all tickets, can be empty
+     * @param costumerId The ID of the customer whose tickets are to be retrieved.
+     * @return List<Ticket> A list containing all tickets associated with the given customer ID.
+     * @throws Exception If the database operation is cancelled or fails.
      */
     suspend fun getTicketsByCostumerId(costumerId: String): List<Ticket> = suspendCancellableCoroutine { cont ->
         databaseReference.orderByChild("costumer_id").equalTo(costumerId)
@@ -86,10 +97,13 @@ class TicketRepository {
             })
     }
 
+
     /**
-     * Deletes a Ticket by its ID.
+     * Deletes a Ticket by its unique ID.
      *
      * @param ticketId The unique ID of the Ticket to delete.
+     * @return Result<Unit> indicating whether the deletion was successful or not.
+     * @throws Exception If the database operation is cancelled or fails.
      */
     suspend fun deleteTicket(ticketId: String): Result<Unit> = suspendCancellableCoroutine { cont ->
         databaseReference.child(ticketId).removeValue()
@@ -97,11 +111,13 @@ class TicketRepository {
             .addOnFailureListener { exception -> cont.resume(Result.failure(exception)) }
     }
 
+
     /**
-     * Retrieves a single Ticket by its ID.
+     * Retrieves a single Ticket by its unique ID.
      *
      * @param ticketId The unique ID of the Ticket to retrieve.
-     * @return Ticket? ticket object or null
+     * @return Ticket? The Ticket object if found, null otherwise.
+     * @throws Exception If the database operation is cancelled or fails.
      */
     suspend fun getTicketById(ticketId: String): Ticket? = suspendCancellableCoroutine { cont ->
         databaseReference.child(ticketId).get()
@@ -114,20 +130,4 @@ class TicketRepository {
             }
     }
 
-
-    //CALL EXAMPLE FOR THE delete:
-    /*
-    viewModelScope.launch {
-    val result = repository.deleteEventCoroutine("someEventId")
-    result
-        .onSuccess {
-            // Handle success
-            println("Event deleted successfully")
-        }
-        .onFailure { error ->
-            // Handle failure
-            println("Error: ${error.message}")
-        }
-}
-     */
 }
