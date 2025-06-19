@@ -220,11 +220,11 @@ fun HomeScreen(navController: NavHostController) {
                 )
                 Icon(
                     painter = painterResource(id = R.drawable.ic_chart), // You’ll need to add this icon
-                    contentDescription = "Ticket Chart",
+                    contentDescription = "Statistics",
                     modifier = Modifier
                         .size(24.dp)
                         .clickable {
-                            navController.navigate("chart")
+                            navController.navigate("stats")
                         }
                 )
                 Icon(

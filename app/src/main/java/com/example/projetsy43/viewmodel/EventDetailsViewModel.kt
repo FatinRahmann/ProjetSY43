@@ -18,6 +18,7 @@ import kotlinx.coroutines.launch
 import kotlinx.datetime.LocalDateTime
 import network.chaintech.kmp_date_time_picker.utils.now
 
+
 //TODO: In all viewModel evaluate the need of setting some variables to private
 
 // ViewModel that manages state and logic for the EventDetailScreen
@@ -239,7 +240,23 @@ class EventDetailsViewModel(
             price = totalPrice.toDouble()
         }
     }
+    fun deleteEvent(eventId: String, onSuccess: () -> Unit) {
+        viewModelScope.launch {
+            val event = eventRepo.getEventById(eventId)
 
+            if (event?.seller_id != UserSession.currentUser?.uid) {
+                alertMessage = "You are not authorized to delete this event"
+                showToast(alertMessage!!)
+                return@launch
+            }
 
-
+            val result = eventRepo.deleteEvent(eventId)
+            if (result.isSuccess) {
+                onSuccess()
+            } else {
+                alertMessage = "Failed to delete event"
+                showToast(alertMessage!!)
+            }
+        }
+    }
 }

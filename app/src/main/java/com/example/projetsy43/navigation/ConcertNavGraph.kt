@@ -22,6 +22,7 @@ import com.example.projetsy43.ui.theme.screens.AddEventScreen
 import com.example.projetsy43.ui.theme.screens.FakePayment
 import com.example.projetsy43.ui.theme.screens.FavoritesScreen
 import com.example.projetsy43.ui.theme.screens.ProfileScreen
+import com.example.projetsy43.ui.theme.screens.SellerStatsScreen
 import com.example.projetsy43.ui.theme.screens.TicketQrViewScreen
 import com.example.projetsy43.ui.theme.screens.TicketsListScreen
 import com.example.projetsy43.viewmodel.HomeViewModel
@@ -96,6 +97,10 @@ fun ConcertNavGraph(navController: NavHostController) {
 
             FakePayment(eventId = eventId, amount = amount, price = price, navController = navController)
         }
+        composable("stats") {
+            SellerStatsScreen(navController)
+        }
+
 
     }
 }
