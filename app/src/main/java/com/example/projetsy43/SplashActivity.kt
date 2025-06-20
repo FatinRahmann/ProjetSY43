@@ -20,25 +20,41 @@ class SplashActivity : AppCompatActivity() {
         logo.scaleX = 2.0f
         logo.scaleY = 2.0f
 
-        // 1. Bounce in + fade in
+        // 1. Bounce in + Bounce again
         logo.animate()
             .scaleX(1.0f)
             .scaleY(1.0f)
             .alpha(1f)
-            .setDuration(1200)
+            .setDuration(600)
             .setInterpolator(BounceInterpolator())
             .withEndAction {
-                // 2. Fade out
+                // Second bounce: expand a bit then shrink
                 logo.animate()
-                    .alpha(0f)
-                    .setDuration(500)
+                    .scaleX(1.25f)
+                    .scaleY(1.25f)
+                    .setDuration(300)
+                    .setInterpolator(BounceInterpolator())
                     .withEndAction {
-                        // 3. Navigate to main page
-                        startActivity(Intent(this, MainActivity::class.java))
-                        finish()
+                        logo.animate()
+                            .scaleX(1.0f)
+                            .scaleY(1.0f)
+                            .setDuration(300)
+                            .setInterpolator(BounceInterpolator())
+                            .withEndAction {
+                                // Fade out before navigating
+                                logo.animate()
+                                    .alpha(0f)
+                                    .setDuration(400)
+                                    .withEndAction {
+                                        startActivity(Intent(this, MainActivity::class.java))
+                                        finish()
+                                    }
+                                    .start()
+                            }
+                            .start()
                     }
                     .start()
             }
             .start()
-    }
-}
+            }
+        }
