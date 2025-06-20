@@ -13,9 +13,10 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
-import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Icon
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
@@ -47,6 +48,7 @@ fun HomeScreen(navController: NavHostController) {
     val viewModel: HomeViewModel = viewModel(factory = HomeViewModelFactory(repository))
     var searchQuery = viewModel.searchQuery
     var filteredEvents = viewModel.filteredEvents
+    val eventPairs = filteredEvents.chunked(2) // Two Events in one line
 
     //TODO: Here might want to add something while its charging
     LaunchedEffect(Unit) { viewModel.fetchEvents() }
@@ -112,14 +114,28 @@ fun HomeScreen(navController: NavHostController) {
 
             // List all events :
 
-            LazyVerticalGrid(
-                columns = GridCells.Fixed(2),
+            LazyColumn(
                 verticalArrangement = Arrangement.spacedBy(16.dp),
-                horizontalArrangement = Arrangement.spacedBy(16.dp),
                 modifier = Modifier.fillMaxSize()
             ) {
-                items(filteredEvents) { event ->
-                    EventCard(event = event) { navController.navigate("eventDetail/${event.cid}") }
+                items(eventPairs) { pair ->
+                    Row(
+                        modifier = Modifier.fillMaxWidth()
+                        .padding(horizontal = 0.dp),
+                        horizontalArrangement = Arrangement.spacedBy(16.dp)
+                    ) {
+                        pair.forEach { event ->
+                            Box(modifier = Modifier.weight(1f)) {
+                                EventCard(event = event) {
+                                    navController.navigate("eventDetail/${event.cid}")
+                                }
+                            }
+                        }
+                        // If there's only 1 item in the pair, fill the remaining space
+                        if (pair.size == 1) {
+                            Spacer(modifier = Modifier.weight(1f))
+                        }
+                    }
                 }
             }
         }

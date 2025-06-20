@@ -6,6 +6,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -50,8 +51,10 @@ fun EventCard(event: Event, onClick: () -> Unit) {
     // definit affichage des cartes
     Card(
         modifier = Modifier
-            .width(160.dp)
-            .height(200.dp)
+            .fillMaxWidth()
+            .aspectRatio(4f / 5f)
+//            .width(160.dp)
+//            .height(200.dp)
             .clickable { onClick() }, // appel de l'action quand on clique
         shape = RoundedCornerShape(12.dp),
         colors = CardDefaults.cardColors(containerColor = Color.White)

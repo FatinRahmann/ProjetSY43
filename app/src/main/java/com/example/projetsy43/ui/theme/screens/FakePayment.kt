@@ -91,7 +91,7 @@ fun FakePayment(
                     )
                 },
                 navigationIcon = {
-                    IconButton(onClick = {  }) {
+                    IconButton(onClick = {navController.popBackStack()}) {
                         Icon(
                             painter = painterResource(id = R.drawable.ic_retour),
                             contentDescription = "Back",
