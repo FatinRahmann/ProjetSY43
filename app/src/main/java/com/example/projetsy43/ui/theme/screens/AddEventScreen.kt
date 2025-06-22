@@ -191,7 +191,7 @@ fun AddEventScreen(
                 onValueChange = { newText ->
                     priceText = newText
                     val parsed = newText.toDoubleOrNull()
-                    if (parsed != null && parsed >= 0.0) {
+                    if (parsed != null && parsed >= 0.0 && parsed != Double.POSITIVE_INFINITY) {
                         viewModel.price = parsed
                     } else {
                         viewModel.price = -1.0
@@ -208,7 +208,7 @@ fun AddEventScreen(
                 "Capacity", capacityText, { newText ->
                     capacityText = newText
                     val parsed = newText.toIntOrNull()
-                    if (parsed != null && parsed > 0) {
+                    if (parsed != null && parsed > 0 && parsed != Int.MAX_VALUE) {
                         viewModel.capacity = parsed
                     } else {
                         viewModel.capacity = -1
