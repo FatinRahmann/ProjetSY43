@@ -295,6 +295,28 @@ fun AddEventScreen(
                     }
                 }
             }
+            if (showDatePicker) {
+                WheelDateTimePickerView(
+                    showDatePicker = true,
+                    height = 170.dp,
+                    rowCount = 5,
+                    startDate = LocalDateTime.now(),
+                    dateTimePickerView = DateTimePickerView.DIALOG_VIEW,
+                    onDoneClick = { date ->
+                        Log.d("DateTimeWheelPicker", "date is $date")
+                        viewModel.datetime = date
+                        showDatePicker = false
+                    },
+                    onDismiss = {
+                        showDatePicker = false
+                    },
+                    selectorProperties = WheelPickerDefaults.selectorProperties(
+                        borderColor = Color.Gray
+                    ),
+                    title = "Choose a Date",
+                    doneLabel = "OK"
+                )
+            }
 
             Box(modifier = Modifier
                 .fillMaxWidth()
