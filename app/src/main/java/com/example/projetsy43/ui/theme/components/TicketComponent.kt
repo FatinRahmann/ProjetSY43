@@ -31,6 +31,7 @@ import coil.compose.AsyncImage
 import com.example.projetsy43.model.entities.Event
 import androidx.compose.foundation.border
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.ui.text.style.TextAlign
 
 @Composable
 fun TicketComponent(
@@ -103,7 +104,7 @@ fun TicketComponent(
                         shape = RoundedCornerShape(12.dp)
                     )*/
             ) {
-                Text(text = "See Ticket")
+                Text(text = "See Ticket" , fontSize = 12.sp , textAlign = TextAlign.Center)
             }
 
         }
