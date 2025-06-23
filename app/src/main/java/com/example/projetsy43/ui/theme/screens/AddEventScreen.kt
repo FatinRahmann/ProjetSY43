@@ -51,6 +51,12 @@ import com.example.projetsy43.ui.theme.components.EventTextField
 import com.example.projetsy43.ui.theme.components.ToastType
 import com.example.projetsy43.viewmodel.AddEventViewModel
 import kotlinx.coroutines.delay
+import kotlinx.datetime.LocalDateTime
+import network.chaintech.kmp_date_time_picker.ui.datetimepicker.WheelDateTimePickerView
+import network.chaintech.kmp_date_time_picker.utils.DateTimePickerView
+import network.chaintech.kmp_date_time_picker.utils.WheelPickerDefaults
+import network.chaintech.kmp_date_time_picker.utils.now
+
 
 @OptIn(ExperimentalMaterial3Api::class)
 //TODO: Control the values on the fields!
