@@ -122,27 +122,7 @@ fun EventDetailScreen(
                 }
                 Spacer(modifier = Modifier.height(4.dp))
 
-                // Only show delete button if current user is the seller
-                if (event != null && UserSession.currentUser?.uid == event.seller_id) {
-                    Spacer(modifier = Modifier.height(20.dp))
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.Center
-                    ) {
-                        Button(
-                            onClick = {
-                                viewModel.deleteEvent(eventId) {
-                                    navController.popBackStack()
-                                }
-                            },
-                            colors = ButtonDefaults.buttonColors(containerColor = Color.Red),
-                            modifier = Modifier.padding(horizontal = 24.dp)
-                        ) {
-                            Text("Delete Event", color = Color.White)
-                        }
-                        Spacer(modifier = Modifier.height(8.dp))
-                    }
-                }
+
                 //  the bottom bar
                 BottomPurchaseBar(viewModel, navController , eventId)
             }
@@ -236,8 +216,8 @@ fun EventDetailScreen(
                     Text(
                         text = it.description,
                         fontSize = 16.sp,
-                        modifier = Modifier.padding(top = 24.dp),
-                        textAlign = TextAlign.Justify
+                        modifier = Modifier.padding(12.dp),
+                        textAlign = TextAlign.Center
                     )
                 }
             }
@@ -251,7 +231,7 @@ fun BottomPurchaseBar(viewModel: EventDetailsViewModel,
                       eventId: String
 ) {
     val context = LocalContext.current
-
+    val event = viewModel.eventState.value
     Box(
         modifier = Modifier
             .fillMaxWidth()
@@ -303,11 +283,43 @@ fun BottomPurchaseBar(viewModel: EventDetailsViewModel,
 
             // Seller layout
             "seller" -> {
-                Text(
-                    text = "Sellers cannot purchase tickets.",
-                    modifier = Modifier.align(Alignment.Center),
-                    color = Color.DarkGray
-                )
+                // Only show delete button if current user is the seller
+                if (event != null && UserSession.currentUser?.uid == event.seller_id) {
+                    Spacer(modifier = Modifier.height(20.dp))
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.Center
+
+                    ) {
+                        Button(
+                            onClick = {
+                                viewModel.deleteEvent(eventId) {
+                                    navController.popBackStack()
+                                }
+                            },
+                            colors = ButtonDefaults.buttonColors(containerColor = Color.Red),
+                            modifier = Modifier.padding(horizontal = 24.dp)
+                        ) {
+                            Text("Delete Event", color = Color.White)
+                        }
+                        Spacer(modifier = Modifier.width(8.dp))
+                        Button(
+                            onClick = {
+                               // add logic here for modify
+
+                            },
+                            colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary),
+                            modifier = Modifier.padding(horizontal = 24.dp)
+                        ) {
+                            Text("Modify Event", color = MaterialTheme.colorScheme.onPrimary)
+                        }
+
+                    }
+                }
+
+                else{
+                    Text("Only who create this event can delete/modify")
+                }
             }
         }
     }
