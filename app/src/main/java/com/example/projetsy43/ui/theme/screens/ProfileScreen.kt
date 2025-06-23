@@ -103,25 +103,25 @@ fun ProfileScreen(
         }
     }
 
-    //boite de dialogue
+    // Dialog box
     if (showDialog) {
         AlertDialog(
             onDismissRequest = { showDialog = false }, //ferme boite si aucune des dexu reps
-            title = { Text("confirmer suppression") },
-            text = { Text("cette action supprimera votre compte et tous events. Continuer ?") },
+            title = { Text("confirm deletion") },
+            text = { Text("This action will delete your account and all events. Continue ?") },
 
-            //fermeture boite + appel fct supp compte
+            //Box closure + call additional account function
             confirmButton = {
                 TextButton(onClick = {
                     showDialog = false
                     deleteAccount()
                 }) {
-                    Text("Oui")
+                    Text("Yes")
                 }
             },
             dismissButton = {
                 TextButton(onClick = { showDialog = false }) {
-                    Text("Non")
+                    Text("No")
                 }
             }
         )
@@ -174,7 +174,8 @@ fun ProfileScreen(
             OutlinedTextField(value = email,
                 onValueChange = { email = it },
                 label = { Text("Email") },
-                modifier = Modifier.fillMaxWidth())
+                modifier = Modifier.fillMaxWidth(),
+                enabled = false)
             Spacer(modifier = Modifier.height(16.dp))
             OutlinedTextField(value = currentPassword,
                 onValueChange = { currentPassword = it },
@@ -242,7 +243,7 @@ fun ProfileScreen(
                 colors = ButtonDefaults.buttonColors(containerColor = Color.Gray)
             ) {
                 Text(
-                    "supp mon compte",
+                    "Delete Account",
                     color = Color.White)
             }
         }
