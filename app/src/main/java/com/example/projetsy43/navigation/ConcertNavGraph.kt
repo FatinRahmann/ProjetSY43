@@ -76,7 +76,6 @@ fun ConcertNavGraph(navController: NavHostController) {
                 factory = HomeViewModelFactory(repository)
             )
 
-
             LaunchedEffect(Unit) {
                 homeViewModel.fetchEvents()
             }
@@ -84,14 +83,10 @@ fun ConcertNavGraph(navController: NavHostController) {
             val allEvents = homeViewModel.allEvents
 
             FavoritesScreen(
-                allEvents = allEvents,
-                onEventClick = { event ->
-                    navController.navigate("eventDetail/${event.cid}")
-                },
-                onGoBackClick = { navController.popBackStack() }
+                navController = navController,
+                allEvents = allEvents
             )
         }
-
         // List of tickets screen
         composable("ticketslist") { TicketsListScreen(navController) }
 
