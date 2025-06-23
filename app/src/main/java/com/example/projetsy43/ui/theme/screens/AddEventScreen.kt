@@ -2,6 +2,7 @@
 package com.example.projetsy43.ui.theme.screens
 
 import android.net.Uri
+import android.util.Log
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.clickable
@@ -56,7 +57,6 @@ import network.chaintech.kmp_date_time_picker.ui.datetimepicker.WheelDateTimePic
 import network.chaintech.kmp_date_time_picker.utils.DateTimePickerView
 import network.chaintech.kmp_date_time_picker.utils.WheelPickerDefaults
 import network.chaintech.kmp_date_time_picker.utils.now
-
 
 @OptIn(ExperimentalMaterial3Api::class)
 //TODO: Control the values on the fields!
