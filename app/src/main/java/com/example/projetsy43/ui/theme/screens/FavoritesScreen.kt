@@ -82,7 +82,7 @@ fun FavoritesScreen(
                     event = event,
                     onClick = {
                         // Replace with your navigation route
-                        navController.navigate("eventdetails/${event.cid}")
+                        navController.navigate("eventDetail/${event.cid}")
                     }
                 )
             }
