@@ -69,7 +69,10 @@ fun TicketsListScreen(
                         contentDescription = "return",
                         modifier = Modifier
                             .padding(start = 16.dp)
-                            .clickable { navController.popBackStack() }
+                            .clickable { navController.navigate("home") {
+                                popUpTo("home") { inclusive = true } // Clears back stack up to home
+                                launchSingleTop = true
+                            } }
                             .size(28.dp),
                         tint = Color.Black
                     )
@@ -81,27 +84,24 @@ fun TicketsListScreen(
             )
         }
     ) { paddingValues ->
-        Column(modifier = Modifier
-            .padding(paddingValues)
-            .padding(horizontal = 16.dp)
+        LazyColumn(
+            contentPadding = paddingValues,
+            modifier = Modifier.padding(horizontal = 16.dp)
         ) {
-            LazyColumn {
-                items(ticketsList) { ticket ->
-                    val event = remember { mutableStateOf<Event?>(null) }
+            items(ticketsList) { ticket ->
+                val event = remember { mutableStateOf<Event?>(null) }
 
-                    LaunchedEffect(ticket.concert_id) {
-                        event.value = viewModel.getEventData(ticket.concert_id)
-                    }
-
-                    event.value?.let {
-                        TicketComponent(event = it) {
-                            val ticketCount = viewModel.getTicketCountPerCid(it.cid)
-                            navController.navigate("ticketqrcode/${ticketCount}/${it.name}/${it.address}/${it.datetime}")
-                        }
-                    }
-
-                    Spacer(modifier = Modifier.height(12.dp))
+                LaunchedEffect(ticket.concert_id) {
+                    event.value = viewModel.getEventData(ticket.concert_id)
                 }
+
+                event.value?.let {
+                    TicketComponent(event = it) {
+                        val ticketCount = viewModel.getTicketCountPerCid(it.cid)
+                        navController.navigate("ticketqrcode/${ticketCount}/${it.name}/${it.address}/${it.datetime}")
+                    }
+                }
+
             }
         }
     }
