@@ -18,9 +18,7 @@ class HomeViewModel(
     //Filtering events
     val filteredEvents: List<Event>
         get() = allEvents.filter {
-            it.name.contains(searchQuery, ignoreCase = true) ||
-            //TODO: Add more filters
-            it.attraction.contains(searchQuery, ignoreCase = true)
+            it.name.contains(searchQuery, ignoreCase = true) || it.attraction.contains(searchQuery, ignoreCase = true) || it.address.contains(searchQuery, ignoreCase = true)
         }
 
     //For the event selection
