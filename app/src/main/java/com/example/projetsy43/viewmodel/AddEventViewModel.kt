@@ -61,4 +61,26 @@ class AddEventViewModel(
         }
 
     }
+
+    fun updateEvent(
+        eventId: String,
+        onSuccess: () -> Unit,
+        onError: (String) -> Unit
+    ) {
+        repository.updateEvent(
+            eventId,
+            name,
+            description,
+            address,
+            type,
+            coverImage,
+            attraction,
+            datetime,
+            price,
+            capacity,
+            onSuccess,
+            onError
+        )
+    }
+
 }

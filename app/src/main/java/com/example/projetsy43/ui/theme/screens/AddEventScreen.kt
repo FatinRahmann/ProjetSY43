@@ -53,6 +53,7 @@ import com.example.projetsy43.ui.theme.components.ToastType
 import com.example.projetsy43.viewmodel.AddEventViewModel
 import kotlinx.coroutines.delay
 import kotlinx.datetime.LocalDateTime
+import kotlinx.datetime.toLocalDateTime
 import network.chaintech.kmp_date_time_picker.ui.datetimepicker.WheelDateTimePickerView
 import network.chaintech.kmp_date_time_picker.utils.DateTimePickerView
 import network.chaintech.kmp_date_time_picker.utils.WheelPickerDefaults
@@ -63,6 +64,8 @@ import network.chaintech.kmp_date_time_picker.utils.now
 @Composable
 fun AddEventScreen(
     navController: NavController,
+    eventId: String?
+
 )
 {
     //ViewModel instantiation with EventRepository Injection
@@ -70,6 +73,9 @@ fun AddEventScreen(
     val viewModel: AddEventViewModel = viewModel(
         factory = AddEventViewModelFactory(repository)
     )
+
+
+
 
     //For the DateTimeWheelPicker
     var showDatePicker by remember { mutableStateOf(false) }
@@ -79,13 +85,13 @@ fun AddEventScreen(
     } ?: "Pick a Date"
 
     var EventDescHasFocused by remember { mutableStateOf(false) }
-    var EventDescText by remember { mutableStateOf("veillez rajouter une description") }
+    var EventDescText by remember { mutableStateOf("") }
 
     var EventPriceHasFocused by remember { mutableStateOf(false) }
-    var priceText by remember { mutableStateOf(viewModel.capacity.toString()) }
+    var priceText by remember { mutableStateOf("") }
 
     var EventCapacityHasFocused by remember { mutableStateOf(false) }
-    var capacityText by remember { mutableStateOf(viewModel.capacity.toString()) }
+    var capacityText by remember { mutableStateOf("") }
 
     var EventCoverHasFocused by remember { mutableStateOf(false) }
     var EventCoverText by remember { mutableStateOf("Veillez rajouter une image") }
@@ -116,6 +122,33 @@ fun AddEventScreen(
             && viewModel.capacity > 0
 
     val showSuccessToast = remember { mutableStateOf(false) }
+    var toastMessage by remember { mutableStateOf("") }
+
+    LaunchedEffect(eventId) {
+        if (!eventId.isNullOrBlank()) {
+            try {
+                val event = repository.getEventById(eventId)
+                event?.let {
+                    viewModel.name = it.name
+                    viewModel.description = it.description
+                    viewModel.address = it.address
+                    viewModel.type = it.type
+                    viewModel.coverImage = it.cover_image
+                    viewModel.attraction = it.attraction
+                    viewModel.datetime = it.datetime.toLocalDateTime()
+                    viewModel.price = it.price
+                    viewModel.capacity = it.capacity
+
+                    priceText = it.price.toString()
+                    capacityText = it.capacity.toString()
+                    EventDescText = it.description
+                }
+            } catch (e: Exception) {
+                Log.e("AddEventScreen", "Failed to load event: ${e.message}")
+            }
+        }
+    }
+
 
     LaunchedEffect(showSuccessToast.value) {
         if (showSuccessToast.value) {
@@ -284,11 +317,25 @@ fun AddEventScreen(
                 item {
                     Button(
                         onClick = {
-                            viewModel.onSubmitEvent(
-                                onSuccess = {
-                                    showSuccessToast.value = true
-                                }
-                            )
+                            if (eventId == null) {
+                                viewModel.onSubmitEvent(
+                                    onSuccess = {
+                                        toastMessage = "Event created successfully!"
+                                        showSuccessToast.value = true
+                                    }
+                                )
+                            } else {
+                                viewModel.updateEvent(
+                                    eventId = eventId,
+                                    onSuccess = {
+                                        toastMessage = "Event updated successfully!"
+                                        showSuccessToast.value = true
+                                    },
+                                    onError = { error ->
+                                        Log.e("AddEventScreen", "Update failed: $error")
+                                    }
+                                )
+                            }
                         },
                         enabled = isFormValid,
                         colors = ButtonDefaults.buttonColors(
@@ -297,7 +344,7 @@ fun AddEventScreen(
                         shape = RectangleShape,
                         modifier = Modifier.fillMaxWidth()
                     ) {
-                        Text("Create Event")
+                        Text(if (eventId == null) "Create Event" else "Update Event")
                     }
                 }
             }
@@ -328,10 +375,12 @@ fun AddEventScreen(
                 .fillMaxWidth()
                 .align(Alignment.TopCenter)) {
                 AppToast(
-                    message = "Event created successfully!",
+                    message = toastMessage,
                     visible = showSuccessToast.value,
                     type = ToastType.SUCCESS,
-                    onDismiss = { showSuccessToast.value = false })
+                    onDismiss = { showSuccessToast.value = false }
+                )
+
             }
         }
     }

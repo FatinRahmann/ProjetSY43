@@ -305,9 +305,9 @@ fun BottomPurchaseBar(viewModel: EventDetailsViewModel,
                         Spacer(modifier = Modifier.width(8.dp))
                         Button(
                             onClick = {
-                               // add logic here for modify
-
+                                navController.navigate("addevent?eventId=$eventId")
                             },
+
                             colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary),
                             modifier = Modifier.padding(horizontal = 24.dp)
                         ) {
