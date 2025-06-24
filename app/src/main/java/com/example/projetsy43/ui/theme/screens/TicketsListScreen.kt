@@ -49,6 +49,7 @@ fun TicketsListScreen(
     val ticketsList = viewModel.toShow
 
     LaunchedEffect(Unit) {
+        viewModel.toShow.clear()
         viewModel.getTickets()
     }
 
