@@ -125,14 +125,14 @@ fun RegisterScreen(navController: NavHostController) {
             Button(onClick = {
                 if (prenom.isNotEmpty() && nom.isNotEmpty() && email.isNotEmpty() && password.isNotEmpty()) {
                     registerProfile(prenom, nom, email, password, context , registerViewModel.type.value)
-                    navController.navigate("home") {
+                    navController.navigate("login") {
                         popUpTo("register") { inclusive = true }
                     }
                 } else {
                     Toast.makeText(context, "Please Fill all the forms", Toast.LENGTH_SHORT).show()
                 }
             },
-                colors = ButtonDefaults.buttonColors(  // Corrected colors usage
+                colors = ButtonDefaults.buttonColors(
                 containerColor = MaterialTheme.colorScheme.primary,
                 contentColor = MaterialTheme.colorScheme.onPrimary
             )) {
