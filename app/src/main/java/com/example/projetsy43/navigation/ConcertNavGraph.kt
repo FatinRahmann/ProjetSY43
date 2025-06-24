@@ -54,7 +54,20 @@ fun ConcertNavGraph(navController: NavHostController) {
         composable("maps") {MapsScreen(navController)}
 
         // Screen to add new event
-        composable("addevent") { AddEventScreen(navController) }
+        composable(
+            route = "addevent?eventId={eventId}",
+            arguments = listOf(
+                navArgument("eventId") {
+                    type = NavType.StringType
+                    nullable = true
+                    defaultValue = null
+                }
+            )
+        ) { backStackEntry ->
+            val eventId = backStackEntry.arguments?.getString("eventId")
+            AddEventScreen(navController = navController, eventId = eventId)
+        }
+
 
         // User profile screen with logout action
         composable("profile") {
