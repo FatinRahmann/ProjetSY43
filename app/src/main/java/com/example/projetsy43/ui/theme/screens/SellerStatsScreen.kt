@@ -44,12 +44,6 @@ import com.example.projetsy43.model.repository.EventRepository
 import com.example.projetsy43.model.repository.TicketRepository
 
 
-data class EventStat(
-    val eventName: String,
-    val ticketsSold: Int,
-    val capacity: Int
-)
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SellerStatsScreen(navController: NavHostController) {

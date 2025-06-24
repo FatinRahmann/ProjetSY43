@@ -5,6 +5,7 @@ import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 import kotlinx.coroutines.suspendCancellableCoroutine
+import kotlinx.datetime.LocalDateTime
 import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
 /**
@@ -126,4 +127,37 @@ class EventRepository {
                 }
             })
     }
+    fun updateEvent(
+        eventId: String,
+        name: String,
+        description: String,
+        address: String,
+        type: String,
+        coverImage: String,
+        attraction: String,
+        datetime: LocalDateTime?,
+        price: Double,
+        capacity: Int,
+        onSuccess: () -> Unit,
+        onError: (String) -> Unit
+    ) {
+        val updatedEvent = mapOf(
+            "name" to name,
+            "description" to description,
+            "address" to address,
+            "type" to type,
+            "cover_image" to coverImage,
+            "attraction" to attraction,
+            "datetime" to datetime.toString(),
+            "price" to price,
+            "capacity" to capacity,
+            "avaliablecapacity" to capacity  // optional, if you reset it too
+        )
+
+        databaseReference.child(eventId).updateChildren(updatedEvent)
+            .addOnSuccessListener { onSuccess() }
+            .addOnFailureListener { onError(it.message ?: "Unknown error") }
+    }
+
+
 }
