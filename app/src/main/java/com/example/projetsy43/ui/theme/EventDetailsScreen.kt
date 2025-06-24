@@ -258,15 +258,18 @@ fun BottomPurchaseBar(viewModel: EventDetailsViewModel,
                     Button(
                         onClick = { viewModel.prepareForPayment(eventId, viewModel.amount, viewModel.price.toFloat())
                             navController.navigate("fakepayment/$eventId/${viewModel.amount}/${viewModel.price}")},
+                        enabled = viewModel.avaliablecapacity > 0, // only enable when capacity ticket>0
                         colors = ButtonDefaults.buttonColors(
                             contentColor = Color.White,
-                            containerColor = Color.Black
+                            containerColor = Color.Black,
+                            disabledContainerColor = Color.Gray,
+                            disabledContentColor = Color.LightGray
                         ),
                         modifier = Modifier
                             .height(50.dp)
                             .weight(1f)
                     ) {
-                        Text(viewModel.getPurchaseButtonTest(), fontSize = 18.sp)
+                        Text(viewModel.getPurchaseButtonTest(), fontSize = 18.sp )
                     }
 
                     Spacer(modifier = Modifier.width(12.dp))
