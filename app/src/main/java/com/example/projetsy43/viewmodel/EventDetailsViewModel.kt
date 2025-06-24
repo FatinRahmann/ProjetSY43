@@ -100,6 +100,9 @@ class EventDetailsViewModel(
 
     // Handle Ticket + Order Purchase Logic
     fun buyTicket() {
+
+        Log.d("EventDetailsViewModel", "Amount before purchase now is: ${amount}")
+
         viewModelScope.launch {
             try {
                 // Validate that both event and user are available
@@ -223,6 +226,8 @@ class EventDetailsViewModel(
 
     // Shared Viewmodel for payment
     fun prepareForPayment(eventId: String, amt: Int, totalPrice: Float) {
+        Log.d("prepareForPayment", "Amount: $amt")
+
         eventState.value?.cid?.let {
             if (it == eventId) {
                 amount = amt

@@ -1,5 +1,6 @@
 package com.example.projetsy43.navigation
 
+import android.util.Log
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
@@ -10,8 +11,11 @@ import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
+import com.example.projetsy43.factory.EventDetailsViewModelFactory
 import com.example.projetsy43.factory.HomeViewModelFactory
 import com.example.projetsy43.model.repository.EventRepository
+import com.example.projetsy43.model.repository.OrderRepository
+import com.example.projetsy43.model.repository.TicketRepository
 import com.example.projetsy43.ui.theme.EventDetailScreen
 import com.example.projetsy43.ui.theme.HomeScreen
 import com.example.projetsy43.ui.theme.LoginScreen
@@ -25,11 +29,22 @@ import com.example.projetsy43.ui.theme.screens.ProfileScreen
 import com.example.projetsy43.ui.theme.screens.SellerStatsScreen
 import com.example.projetsy43.ui.theme.screens.TicketQrViewScreen
 import com.example.projetsy43.ui.theme.screens.TicketsListScreen
+import com.example.projetsy43.viewmodel.EventDetailsViewModel
 import com.example.projetsy43.viewmodel.HomeViewModel
 
 
 @Composable
 fun ConcertNavGraph(navController: NavHostController) {
+
+    val eventRepo = remember { EventRepository() }
+    val ticketRepo = remember { TicketRepository() }
+    val orderRepo = remember { OrderRepository() }
+
+
+    val viewModel: EventDetailsViewModel = viewModel(
+        factory = EventDetailsViewModelFactory(eventRepo, ticketRepo, orderRepo)
+    )
+
     NavHost(navController = navController, startDestination = "welcome") {
         // Entry screen when app starts
         composable("welcome") { WelcomeScreen(navController) }
@@ -47,7 +62,7 @@ fun ConcertNavGraph(navController: NavHostController) {
         composable("eventDetail/{cid}") { backStackEntry ->
             //TODO: Here see EventDetailsViewModel todo
             val cid = backStackEntry.arguments?.getString("cid") ?: "0000"
-            EventDetailScreen(eventId = cid,navController = navController)
+            EventDetailScreen(eventId = cid,navController = navController, viewModel = viewModel)
         }
 
         // Event Map screen
@@ -123,8 +138,9 @@ fun ConcertNavGraph(navController: NavHostController) {
             val eventId = backStackEntry.arguments?.getString("eventId")!!
             val amount = backStackEntry.arguments?.getInt("amount")!!
             val price = backStackEntry.arguments?.getFloat("price")!!
+            Log.d("FakePayment", "Amount: $amount")
 
-            FakePayment(eventId = eventId, amount = amount, price = price, navController = navController)
+            FakePayment(eventId = eventId, amount = amount, price = price, navController = navController, viewModel = viewModel)
         }
         composable("stats") {
             SellerStatsScreen(navController)

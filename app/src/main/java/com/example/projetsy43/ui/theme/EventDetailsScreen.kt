@@ -56,17 +56,9 @@ import com.example.projetsy43.viewmodel.EventDetailsViewModel
 @Composable
 fun EventDetailScreen(
     eventId: String,
-    navController: NavHostController
+    navController: NavHostController,
+    viewModel: EventDetailsViewModel
 ) {
-    // Create and remember repositories
-    val eventRepo = remember { EventRepository() }
-    val ticketRepo = remember { TicketRepository() }
-    val orderRepo = remember { OrderRepository() }
-
-    // Inject ViewModel using custom factory
-    val viewModel: EventDetailsViewModel = viewModel(
-        factory = EventDetailsViewModelFactory(eventRepo, ticketRepo, orderRepo)
-    )
 
     // Load event data once when the screen first appears
     LaunchedEffect(Unit) {

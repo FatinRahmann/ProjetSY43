@@ -66,13 +66,9 @@ fun FakePayment(
     eventId: String,
     amount: Int,
     price: Float,
-    navController: NavHostController
+    navController: NavHostController,
+    viewModel: EventDetailsViewModel
 ){
-    val viewModel: EventDetailsViewModel = viewModel(
-        factory = EventDetailsViewModelFactory(
-            EventRepository(), TicketRepository(), OrderRepository()
-        )
-    )
 
     LaunchedEffect(Unit) {
         viewModel.prepareForPayment(eventId, amount, price)
@@ -157,7 +153,7 @@ fun FakePayment(
         Spacer(modifier = Modifier.height(24.dp))
 
         // Card Form
-        CardLayout(navController, eventId, amount, price)
+        CardLayout(navController, eventId, amount, price, viewModel)
     }
     }
 }
@@ -191,7 +187,8 @@ fun CardLayout(
     navController: NavHostController,
     eventId: String,
     amount: Int,
-    price: Float
+    price: Float,
+    viewModel: EventDetailsViewModel
 ) {
     // Toast state
     val showToast = remember { mutableStateOf(false) }
@@ -210,11 +207,6 @@ fun CardLayout(
     val orderRepo = remember { OrderRepository() }
 
     val coroutineScope = rememberCoroutineScope()
-
-    // Inject ViewModel using custom factory
-    val viewModel: EventDetailsViewModel = viewModel(
-        factory = EventDetailsViewModelFactory(eventRepo, ticketRepo, orderRepo)
-    )
 
     // Load event data into ViewModel when screen starts
     LaunchedEffect(Unit) {
