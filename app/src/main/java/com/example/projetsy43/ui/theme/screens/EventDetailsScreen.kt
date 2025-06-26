@@ -1,4 +1,4 @@
-package com.example.projetsy43.ui.theme
+package com.example.projetsy43.ui.theme.screens
 
 import android.util.Log
 import androidx.compose.foundation.background
@@ -25,7 +25,6 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -36,15 +35,10 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import coil.compose.AsyncImage
 import com.example.projetsy43.R
-import com.example.projetsy43.factory.EventDetailsViewModelFactory
 import com.example.projetsy43.model.UserSession
-import com.example.projetsy43.model.repository.EventRepository
-import com.example.projetsy43.model.repository.OrderRepository
-import com.example.projetsy43.model.repository.TicketRepository
 import com.example.projetsy43.ui.theme.components.AppToast
 import com.example.projetsy43.ui.theme.components.CircularButtonComponent
 import com.example.projetsy43.ui.theme.components.ToastType

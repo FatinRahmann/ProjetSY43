@@ -16,12 +16,12 @@ import com.example.projetsy43.factory.HomeViewModelFactory
 import com.example.projetsy43.model.repository.EventRepository
 import com.example.projetsy43.model.repository.OrderRepository
 import com.example.projetsy43.model.repository.TicketRepository
-import com.example.projetsy43.ui.theme.EventDetailScreen
-import com.example.projetsy43.ui.theme.HomeScreen
-import com.example.projetsy43.ui.theme.LoginScreen
-import com.example.projetsy43.ui.theme.MapsScreen
-import com.example.projetsy43.ui.theme.RegisterScreen
-import com.example.projetsy43.ui.theme.WelcomeScreen
+import com.example.projetsy43.ui.theme.screens.EventDetailScreen
+import com.example.projetsy43.ui.theme.screens.HomeScreen
+import com.example.projetsy43.ui.theme.screens.LoginScreen
+import com.example.projetsy43.ui.theme.screens.MapsScreen
+import com.example.projetsy43.ui.theme.screens.RegisterScreen
+import com.example.projetsy43.ui.theme.screens.WelcomeScreen
 import com.example.projetsy43.ui.theme.screens.AddEventScreen
 import com.example.projetsy43.ui.theme.screens.FakePayment
 import com.example.projetsy43.ui.theme.screens.FavoritesScreen
@@ -66,7 +66,7 @@ fun ConcertNavGraph(navController: NavHostController) {
         }
 
         // Event Map screen
-        composable("maps") {MapsScreen(navController)}
+        composable("maps") { MapsScreen(navController) }
 
         // Screen to add new event
         composable(

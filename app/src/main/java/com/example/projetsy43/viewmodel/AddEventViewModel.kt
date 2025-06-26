@@ -13,7 +13,6 @@ import kotlinx.datetime.LocalDateTime
 class AddEventViewModel(
     private val repository: EventRepository
 ) : ViewModel() {
-    //TODO: Have to handle the adding of an image as a drawable
     var cid by mutableStateOf("") //This one have to find logic later
     var name by mutableStateOf("")
     var description by mutableStateOf("No description was added yet")
@@ -26,7 +25,7 @@ class AddEventViewModel(
     var coverImage by mutableStateOf("defaultroute")
     var attraction by mutableStateOf("")
 
-
+    
     fun onSubmitEvent(onSuccess: () -> Unit) {
 
         viewModelScope.launch {

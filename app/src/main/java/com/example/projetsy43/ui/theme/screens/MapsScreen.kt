@@ -1,4 +1,4 @@
-package com.example.projetsy43.ui.theme
+package com.example.projetsy43.ui.theme.screens
 import android.content.Context
 import android.location.Geocoder
 import android.os.Bundle

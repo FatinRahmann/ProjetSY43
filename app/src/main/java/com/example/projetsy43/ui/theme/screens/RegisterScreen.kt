@@ -1,4 +1,4 @@
-package com.example.projetsy43.ui.theme
+package com.example.projetsy43.ui.theme.screens
 
 import android.content.Context
 import android.widget.Toast
@@ -11,7 +11,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField

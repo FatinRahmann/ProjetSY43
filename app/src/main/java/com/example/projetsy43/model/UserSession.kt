@@ -15,8 +15,6 @@ import com.example.projetsy43.model.entities.User
 object UserSession {
 
     var currentUser: User? = null
-    //TODO: Remove all of the non used attributes
-    val cartItems = mutableStateListOf<Ticket>()
 
     fun isLoggedIn(): Boolean = currentUser != null
 
