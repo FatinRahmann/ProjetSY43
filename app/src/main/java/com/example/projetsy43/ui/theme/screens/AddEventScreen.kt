@@ -74,6 +74,8 @@ fun AddEventScreen(
         factory = AddEventViewModelFactory(repository)
     )
 
+    val showErrorToast = remember { mutableStateOf(false) }
+    var errorToastMessage by remember { mutableStateOf("") }
 
 
 
@@ -239,7 +241,13 @@ fun AddEventScreen(
                         onValueChange = { newText ->
                             priceText = newText
                             val parsed = newText.toDoubleOrNull()
-                            viewModel.price = parsed ?: -1.0
+                            if (parsed == null && newText.isNotEmpty()) {
+                                errorToastMessage = "Price must be a valid number"
+                                showErrorToast.value = true
+                                viewModel.price = -1.0 // mark invalid price
+                            } else {
+                                viewModel.price = parsed ?: -1.0
+                            }
                         },
                         onFocus = {
                             if (!EventPriceHasFocused) {
@@ -251,10 +259,17 @@ fun AddEventScreen(
                 }
                 item {
                     EventTextField(
-                        "Capacity", capacityText, { newText ->
+                        "Capacity", capacityText,
+                        onValueChange = { newText ->
                             capacityText = newText
                             val parsed = newText.toIntOrNull()
-                            viewModel.capacity = parsed ?: -1
+                            if (parsed == null && newText.isNotEmpty()) {
+                                errorToastMessage = "Capacity must be a valid integer"
+                                showErrorToast.value = true
+                                viewModel.capacity = -1 // mark invalid capacity
+                            } else {
+                                viewModel.capacity = parsed ?: -1
+                            }
                         },
                         {
                             if (!EventCapacityHasFocused) {
@@ -381,6 +396,13 @@ fun AddEventScreen(
                     visible = showSuccessToast.value,
                     type = ToastType.SUCCESS,
                     onDismiss = { showSuccessToast.value = false }
+                )
+
+                AppToast(
+                    message = errorToastMessage,
+                    visible = showErrorToast.value,
+                    type = ToastType.ERROR,
+                    onDismiss = { showErrorToast.value = false }
                 )
 
             }

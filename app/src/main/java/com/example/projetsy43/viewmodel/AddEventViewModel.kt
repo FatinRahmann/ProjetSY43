@@ -25,7 +25,6 @@ class AddEventViewModel(
     var coverImage by mutableStateOf("defaultroute")
     var attraction by mutableStateOf("")
 
-    
     fun onSubmitEvent(onSuccess: () -> Unit) {
 
         viewModelScope.launch {
@@ -51,10 +50,8 @@ class AddEventViewModel(
                 onSuccess = {
                     // methode onSucces du bouton addEvent
                     onSuccess()
-                    //TODO: do something here
                 },
                 onFailure = { error ->
-                    //TODO:do something here
                 }
             )
         }
