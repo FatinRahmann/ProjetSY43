@@ -48,7 +48,6 @@ fun HomeScreen(navController: NavHostController) {
     var filteredEvents = viewModel.filteredEvents
     val eventPairs = filteredEvents.chunked(2) // Two Events in one line
 
-    //TODO: Here might want to add something while its charging
     LaunchedEffect(Unit) { viewModel.fetchEvents() }
 
     Scaffold(

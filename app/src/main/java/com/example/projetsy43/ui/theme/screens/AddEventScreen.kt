@@ -60,7 +60,6 @@ import network.chaintech.kmp_date_time_picker.utils.WheelPickerDefaults
 import network.chaintech.kmp_date_time_picker.utils.now
 
 @OptIn(ExperimentalMaterial3Api::class)
-//TODO: Control the values on the fields!
 @Composable
 fun AddEventScreen(
     navController: NavController,

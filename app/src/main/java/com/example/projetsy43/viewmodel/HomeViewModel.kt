@@ -31,7 +31,6 @@ class HomeViewModel(
                 allEvents = events
                 Log.d("HomeViewModel", "Fetched events: ${events.size}")
             } catch (e: Exception) {
-                //TODO: Handle this error here properly
                 Log.d("HomeViewModel", "Error")
             }
         }

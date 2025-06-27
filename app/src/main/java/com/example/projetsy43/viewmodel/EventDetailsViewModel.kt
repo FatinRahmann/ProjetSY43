@@ -19,7 +19,6 @@ import kotlinx.datetime.LocalDateTime
 import network.chaintech.kmp_date_time_picker.utils.now
 
 
-//TODO: In all viewModel evaluate the need of setting some variables to private
 
 // ViewModel that manages state and logic for the EventDetailScreen
 class EventDetailsViewModel(

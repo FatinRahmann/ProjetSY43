@@ -66,8 +66,6 @@ class OrderRepository {
     }
 
 
-    //TODO: Manage case where no orders where found but not here! In the ViewModel
-
     /**
      * Retrieves a single Order by its unique ID.
      *

@@ -60,7 +60,6 @@ fun ConcertNavGraph(navController: NavHostController) {
 
         // Event detail screen with event id parameter
         composable("eventDetail/{cid}") { backStackEntry ->
-            //TODO: Here see EventDetailsViewModel todo
             val cid = backStackEntry.arguments?.getString("cid") ?: "0000"
             EventDetailScreen(eventId = cid,navController = navController, viewModel = viewModel)
         }

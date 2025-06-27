@@ -24,7 +24,6 @@ class EventRepository {
      *
      * @param event The Event object to add or update.
      * @return Result<Unit> indicating success or failure of the operation.
-     * TODO: Handle adding an image to the drawable resources.
      */
     suspend fun addOrUpdateEvent(event: Event) : Result<Unit> = suspendCancellableCoroutine { cont ->
         // If no ID is set, generate a new key from Firebase push()
